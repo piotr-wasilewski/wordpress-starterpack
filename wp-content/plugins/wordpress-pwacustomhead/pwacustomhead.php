@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Wordpress pwacustomfix
+Plugin Name: Wordpress pwacustomhead
 */
 
 
