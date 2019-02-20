@@ -3,7 +3,7 @@
  * Plugin Name:			Ocean Extra
  * Plugin URI:			https://oceanwp.org/extension/ocean-extra/
  * Description:			Add extra features like widgets, metaboxes, import/export and a panel to activate the premium extensions.
- * Version:				1.5.2
+ * Version:				1.5.3
  * Author:				OceanWP
  * Author URI:			https://oceanwp.org/
  * Requires at least:	4.5.0
@@ -86,7 +86,7 @@ final class Ocean_Extra {
 		$this->token 			= 'ocean-extra';
 		$this->plugin_url 		= plugin_dir_url( __FILE__ );
 		$this->plugin_path 		= plugin_dir_path( __FILE__ );
-		$this->version 			= '1.5.2';
+		$this->version 			= '1.5.3';
 
 		define( 'OE_URL', $this->plugin_url );
 		define( 'OE_PATH', $this->plugin_path );
@@ -477,32 +477,32 @@ final class Ocean_Extra {
 		$twitter_handle = '@' . str_replace( '@' , '' , get_theme_mod( 'ocean_twitter_handle' ) );
 
 		// Output
-		$output = $this->opengraph_tag( 'property', 'og:type', trim( $type ) );
-		$output .= $this->opengraph_tag( 'property', 'og:title', trim( $title ) );
+		$output = self::opengraph_tag( 'property', 'og:type', trim( $type ) );
+		$output .= self::opengraph_tag( 'property', 'og:title', trim( $title ) );
 
 		if ( isset( $description ) && ! empty( $description ) ) {
-			$output .= $this->opengraph_tag( 'property', 'og:description', trim( $description ) );
+			$output .= self::opengraph_tag( 'property', 'og:description', trim( $description ) );
 		}
 
 		if ( has_post_thumbnail( oceanwp_post_id() ) && true == $has_img ) {
-			$output .= $this->opengraph_tag( 'property', 'og:image', trim( $image ) );
-			$output .= $this->opengraph_tag( 'property', 'og:image:width', absint( $get_image[1] ) );
-			$output .= $this->opengraph_tag( 'property', 'og:image:height', absint( $get_image[2] ) );
+			$output .= self::opengraph_tag( 'property', 'og:image', trim( $image ) );
+			$output .= self::opengraph_tag( 'property', 'og:image:width', absint( $get_image[1] ) );
+			$output .= self::opengraph_tag( 'property', 'og:image:height', absint( $get_image[2] ) );
 		}
 
-		$output .= $this->opengraph_tag( 'property', 'og:url', trim( get_permalink() ) );
-		$output .= $this->opengraph_tag( 'property', 'og:site_name', trim( get_bloginfo( 'name' ) ) );
+		$output .= self::opengraph_tag( 'property', 'og:url', trim( get_permalink() ) );
+		$output .= self::opengraph_tag( 'property', 'og:site_name', trim( get_bloginfo( 'name' ) ) );
 
 		if ( is_singular() && ! is_front_page() ) {
 
 			if ( isset( $author ) && ! empty( $author ) ) {
-				$output .= $this->opengraph_tag( 'property', 'article:author', trim( $author ) );
+				$output .= self::opengraph_tag( 'property', 'article:author', trim( $author ) );
 			}
 
 			if ( is_singular( 'post' ) ) {
-				$output .= $this->opengraph_tag( 'property', 'article:published_time', trim( get_post_time( 'c' ) ) );
-				$output .= $this->opengraph_tag( 'property', 'article:modified_time', trim( get_post_modified_time( 'c' ) ) );
-				$output .= $this->opengraph_tag( 'property', 'og:updated_time', trim( get_post_modified_time( 'c' ) ) );
+				$output .= self::opengraph_tag( 'property', 'article:published_time', trim( get_post_time( 'c' ) ) );
+				$output .= self::opengraph_tag( 'property', 'article:modified_time', trim( get_post_modified_time( 'c' ) ) );
+				$output .= self::opengraph_tag( 'property', 'og:updated_time', trim( get_post_modified_time( 'c' ) ) );
 			}
 
 		}
@@ -512,41 +512,41 @@ final class Ocean_Extra {
 			$tags = get_the_tags();
 			if ( ! is_wp_error( $tags ) && ( is_array( $tags ) && $tags !== array() ) ) {
 				foreach ( $tags as $tag ) {
-					$output .= $this->opengraph_tag( 'property', 'article:tag', trim( $tag->name ) );
+					$output .= self::opengraph_tag( 'property', 'article:tag', trim( $tag->name ) );
 				}
 			}
 
 			$terms = get_the_category();
 			if ( ! is_wp_error( $terms ) && ( is_array( $terms ) && $terms !== array() ) ) {
 				// We can only show one section here, so we take the first one.
-				$output .= $this->opengraph_tag( 'property', 'article:section', trim( $terms[0]->name ) );
+				$output .= self::opengraph_tag( 'property', 'article:section', trim( $terms[0]->name ) );
 			}
 
 		}
 
 		if ( isset( $publisher ) && ! empty( $publisher ) ) {
-			$output .= $this->opengraph_tag( 'property', 'article:publisher', trim( $publisher ) );
+			$output .= self::opengraph_tag( 'property', 'article:publisher', trim( $publisher ) );
 		}
 
 		if ( isset( $fb_app_id ) && ! empty( $fb_app_id ) ) {
-			$output .= $this->opengraph_tag( 'property', 'fb:app_id', trim( $fb_app_id ) );
+			$output .= self::opengraph_tag( 'property', 'fb:app_id', trim( $fb_app_id ) );
 		}
 
 		// Twitter
-		$output .= $this->opengraph_tag( 'name', 'twitter:card', 'summary_large_image' );
-		$output .= $this->opengraph_tag( 'name', 'twitter:title', trim( $title ) );
+		$output .= self::opengraph_tag( 'name', 'twitter:card', 'summary_large_image' );
+		$output .= self::opengraph_tag( 'name', 'twitter:title', trim( $title ) );
 
 		if ( isset( $description ) && ! empty( $description ) ) {
-			$output .= $this->opengraph_tag( 'name', 'twitter:description', trim( $description ) );
+			$output .= self::opengraph_tag( 'name', 'twitter:description', trim( $description ) );
 		}
 
 		if ( has_post_thumbnail( get_the_ID() ) && true == $has_img ) {
-			$output .= $this->opengraph_tag( 'name', 'twitter:image', trim( $image ) );
+			$output .= self::opengraph_tag( 'name', 'twitter:image', trim( $image ) );
 		}
 
 		if ( isset( $twitter_handle ) && ! empty( $twitter_handle ) ) {
-			$output .= $this->opengraph_tag( 'name', 'twitter:site', trim( $twitter_handle ) );
-			$output .= $this->opengraph_tag( 'name', 'twitter:creator', trim( $twitter_handle ) );
+			$output .= self::opengraph_tag( 'name', 'twitter:site', trim( $twitter_handle ) );
+			$output .= self::opengraph_tag( 'name', 'twitter:creator', trim( $twitter_handle ) );
 		}
 
 		echo $output;
