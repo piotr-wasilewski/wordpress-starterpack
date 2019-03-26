@@ -716,7 +716,7 @@ class WPForms_Frontend {
 			}
 
 			if ( ! empty( $errors['recaptcha'] ) ) {
-				echo '<label id="wpforms-field_recaptcah-error" class="wpforms-error">' . esc_html( $errors['recaptcha'] ) . '</label>';
+				echo '<label id="wpforms-field_recaptcha-error" class="wpforms-error">' . esc_html( $errors['recaptcha'] ) . '</label>';
 			}
 
 		echo '</div>';
@@ -959,7 +959,7 @@ class WPForms_Frontend {
 				$recaptch_inline .= 'var wpformsRecaptchaCallback = function(el){var $form = jQuery(el).closest("form");$form.find("button[type=submit]").get(0).recaptchaID = false;$form.submit();};';
 			} else {
 				$recaptch_inline  = 'var wpformsRecaptchaLoad = function(){jQuery(".g-recaptcha").each(function(index, el){grecaptcha.render(el,{callback:function(){wpformsRecaptchaCallback(el);}},true);});};';
-				$recaptch_inline .= 'var wpformsRecaptchaCallback = function(el){jQuery(el).parent().find(".wpforms-recaptcha-hidden").val("1").valid();};';
+				$recaptch_inline .= 'var wpformsRecaptchaCallback = function(el){jQuery(el).parent().find(".wpforms-recaptcha-hidden").val("1").trigger("change").valid();};';
 			}
 			wp_add_inline_script( 'wpforms-recaptcha', $recaptch_inline );
 		}

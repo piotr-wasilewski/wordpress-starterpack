@@ -23,6 +23,10 @@
  * ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'Kangaroos cannot jump here' );
+}
+
 abstract class Ai1wm_Database {
 
 	/**
@@ -122,6 +126,13 @@ abstract class Ai1wm_Database {
 	 * @var boolean
 	 */
 	protected $betheme_responsive = false;
+
+	/**
+	 * Optimize Press
+	 *
+	 * @var boolean
+	 */
+	protected $optimize_press = false;
 
 	/**
 	 * Constructor
@@ -487,6 +498,27 @@ abstract class Ai1wm_Database {
 	}
 
 	/**
+	 * Set Optimize Press
+	 *
+	 * @param  boolean $active Is Optimize Press Active?
+	 * @return object
+	 */
+	public function set_optimize_press( $active ) {
+		$this->optimize_press = $active;
+
+		return $this;
+	}
+
+	/**
+	 * Get Optimize Press
+	 *
+	 * @return boolean
+	 */
+	public function get_optimize_press() {
+		return $this->optimize_press;
+	}
+
+	/**
 	 * Get tables
 	 *
 	 * @return array
@@ -690,8 +722,7 @@ abstract class Ai1wm_Database {
 								$value = $this->replace_column_prefixes( $value, 0 );
 							}
 
-							// Replace table values
-							$items[] = is_null( $value ) ? 'NULL' : "'" . $this->escape( $value ) . "'";
+							$items[] = $this->prepare_table_values( $value );
 						}
 
 						// Set table values
@@ -1006,7 +1037,6 @@ abstract class Ai1wm_Database {
 			return $input;
 		}
 
-		// Replace all occurrences
 		return str_ireplace( $search, $replace, $input );
 	}
 
@@ -1034,7 +1064,6 @@ abstract class Ai1wm_Database {
 			return $input;
 		}
 
-		// Replace all occurrences
 		return str_ireplace( $search, $replace, $input );
 	}
 
@@ -1047,12 +1076,12 @@ abstract class Ai1wm_Database {
 	protected function replace_table_values( $input ) {
 		// Replace base64 encoded values (Visual Composer)
 		if ( $this->get_visual_composer() ) {
-			$input = preg_replace_callback( '/\[vc_raw_html\]([a-zA-Z0-9\/+]*={0,2})\[\/vc_raw_html\]/S', array( $this, 'replace_visual_composer_values_callback' ), $input );
+			$input = preg_replace_callback( '/\[vc_raw_html\]([a-zA-Z0-9\/+]+={0,2})\[\/vc_raw_html\]/S', array( $this, 'replace_visual_composer_values_callback' ), $input );
 		}
 
-		// Replace base64 encoded values (BeTheme Responsive)
-		if ( $this->get_betheme_responsive() ) {
-			$input = preg_replace_callback( "/'mfn-page-items','([a-zA-Z0-9\/+]*={0,2})'/S", array( $this, 'replace_betheme_responsive_values_callback' ), $input );
+		// Replace base64 encoded values (BeTheme Responsive and Optimize Press)
+		if ( $this->get_betheme_responsive() || $this->get_optimize_press() ) {
+			$input = preg_replace_callback( "/'([a-zA-Z0-9\/+]+={0,2})'/S", array( $this, 'replace_base64_values_callback' ), $input );
 		}
 
 		// Replace serialized values
@@ -1067,6 +1096,52 @@ abstract class Ai1wm_Database {
 	}
 
 	/**
+	 * Replace base64 values callback (Visual Composer)
+	 *
+	 * @param  array  $matches List of matches
+	 * @return string
+	 */
+	protected function replace_visual_composer_values_callback( $matches ) {
+		// Validate base64 data
+		if ( Ai1wm_Database_Utility::base64_validate( $matches[1] ) ) {
+
+			// Decode base64 characters
+			$matches[1] = Ai1wm_Database_Utility::base64_decode( $matches[1] );
+
+			// Replace values
+			$matches[1] = Ai1wm_Database_Utility::replace_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $matches[1] );
+
+			// Encode base64 characters
+			$matches[1] = Ai1wm_Database_Utility::base64_encode( $matches[1] );
+		}
+
+		return '[vc_raw_html]' . $matches[1] . '[/vc_raw_html]';
+	}
+
+	/**
+	 * Replace base64 values callback (BeTheme Responsive and Optimize Press)
+	 *
+	 * @param  array  $matches List of matches
+	 * @return string
+	 */
+	protected function replace_base64_values_callback( $matches ) {
+		// Validate base64 data
+		if ( Ai1wm_Database_Utility::base64_validate( $matches[1] ) ) {
+
+			// Decode base64 characters
+			$matches[1] = Ai1wm_Database_Utility::base64_decode( $matches[1] );
+
+			// Replace serialized values
+			$matches[1] = Ai1wm_Database_Utility::replace_serialized_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $matches[1] );
+
+			// Encode base64 characters
+			$matches[1] = Ai1wm_Database_Utility::base64_encode( $matches[1] );
+		}
+
+		return "'" . $matches[1] . "'";
+	}
+
+	/**
 	 * Replace table values callback
 	 *
 	 * @param  array  $matches List of matches
@@ -1074,53 +1149,15 @@ abstract class Ai1wm_Database {
 	 */
 	protected function replace_table_values_callback( $matches ) {
 		// Unescape MySQL special characters
-		$input = Ai1wm_Database_Utility::unescape_mysql( $matches[1] );
+		$matches[1] = Ai1wm_Database_Utility::unescape_mysql( $matches[1] );
 
 		// Replace serialized values
-		$input = Ai1wm_Database_Utility::replace_serialized_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $input );
+		$matches[1] = Ai1wm_Database_Utility::replace_serialized_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $matches[1] );
 
 		// Escape MySQL special characters
-		$input = Ai1wm_Database_Utility::escape_mysql( $input );
+		$matches[1] = Ai1wm_Database_Utility::escape_mysql( $matches[1] );
 
-		return "'" . $input . "'";
-	}
-
-	/**
-	 * Replace base64 values callback (Visual Composer)
-	 *
-	 * @param  array  $matches List of matches
-	 * @return string
-	 */
-	protected function replace_visual_composer_values_callback( $matches ) {
-		// Decode base64 characters
-		$input = Ai1wm_Database_Utility::base64_decode( $matches[1] );
-
-		// Replace values
-		$input = Ai1wm_Database_Utility::replace_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $input );
-
-		// Encode base64 characters
-		$input = Ai1wm_Database_Utility::base64_encode( $input );
-
-		return '[vc_raw_html]' . $input . '[/vc_raw_html]';
-	}
-
-	/**
-	 * Replace base64 values callback (BeTheme Responsive)
-	 *
-	 * @param  array  $matches List of matches
-	 * @return string
-	 */
-	protected function replace_betheme_responsive_values_callback( $matches ) {
-		// Decode base64 characters
-		$input = Ai1wm_Database_Utility::base64_decode( $matches[1] );
-
-		// Replace serialized values
-		$input = Ai1wm_Database_Utility::replace_serialized_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $input );
-
-		// Encode base64 characters
-		$input = Ai1wm_Database_Utility::base64_encode( $input );
-
-		return "'mfn-page-items','" . $input . "'";
+		return "'" . $matches[1] . "'";
 	}
 
 	/**
@@ -1337,6 +1374,22 @@ abstract class Ai1wm_Database {
 		);
 
 		return $header;
+	}
+
+	/**
+	 * Prepare table values
+	 *
+	 * @param  mixed $input Table value
+	 * @return mixed
+	 */
+	protected function prepare_table_values( $input ) {
+		if ( is_null( $input ) ) {
+			return 'NULL';
+		} elseif ( is_numeric( $input ) ) {
+			return $input;
+		}
+
+		return "'" . $this->escape( $input ) . "'";
 	}
 
 	/**
