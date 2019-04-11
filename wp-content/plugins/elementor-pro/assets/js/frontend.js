@@ -1,4 +1,4 @@
-/*! elementor-pro - v2.5.1 - 26-03-2019 */
+/*! elementor-pro - v2.5.5 - 08-04-2019 */
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -1319,7 +1319,7 @@ var _class = function (_elementorModules$fro) {
 
 			modal.setMessage(this.$element).show();
 
-			if (!this.isEdit && settings.close_button_delay) {
+			if (!this.isEdit) {
 				if (settings.close_button_delay) {
 					$closeButton.hide();
 

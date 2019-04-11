@@ -90,7 +90,7 @@ class Ai1wm_Backups_Controller {
 		exit;
 	}
 
-	public function add_label( $params = array() ) {
+	public static function add_label( $params = array() ) {
 		ai1wm_setup_environment();
 
 		$backups_labels = get_option( AI1WM_BACKUPS_LABELS, array() );

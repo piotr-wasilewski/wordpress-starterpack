@@ -689,7 +689,7 @@ abstract class Ai1wm_Database {
 				}
 
 				// Apply additional table prefix columns
-				$columns = $this->get_table_prefix_columns( $table_name );
+				$prefix_columns = $this->get_table_prefix_columns( $table_name );
 
 				// Run SQL query
 				$result = $this->query( $query );
@@ -706,6 +706,12 @@ abstract class Ai1wm_Database {
 
 				// Generate insert statements
 				if ( $num_rows = $this->num_rows( $result ) ) {
+					$table_columns = array();
+
+					// Loop over table columns
+					while ( $column = $this->fetch_field( $result ) ) {
+						$table_columns[ strtolower( $column->name ) ] = $column->type;
+					}
 
 					// Loop over table rows
 					while ( $row = $this->fetch_assoc( $result ) ) {
@@ -718,11 +724,11 @@ abstract class Ai1wm_Database {
 						$items = array();
 						foreach ( $row as $key => $value ) {
 							// Replace table prefix columns
-							if ( isset( $columns[ strtolower( $key ) ] ) ) {
+							if ( isset( $prefix_columns[ strtolower( $key ) ] ) ) {
 								$value = $this->replace_column_prefixes( $value, 0 );
 							}
 
-							$items[] = $this->prepare_table_values( $value );
+							$items[] = $this->prepare_table_values( $value, $table_columns[ strtolower( $key ) ] );
 						}
 
 						// Set table values
@@ -819,29 +825,33 @@ abstract class Ai1wm_Database {
 					// Check max allowed packet
 					if ( strlen( $query ) <= $max_allowed_packet ) {
 
-						// Replace table prefixes
-						$query = $this->replace_table_prefixes( $query );
+						// Skip cache query
+						if ( ! $this->is_cache_query( $query ) ) {
 
-						// Replace table collations
-						$query = $this->replace_table_collations( $query );
+							// Replace table prefixes
+							$query = $this->replace_table_prefixes( $query );
 
-						// Replace table values
-						$query = $this->replace_table_values( $query );
+							// Replace table collations
+							$query = $this->replace_table_collations( $query );
 
-						// Replace raw values
-						$query = $this->replace_raw_values( $query );
+							// Replace table values
+							$query = $this->replace_table_values( $query );
 
-						// Run SQL query
-						$this->query( $query );
-
-						// Replace table engines (Azure)
-						if ( $this->errno() === 1030 ) {
-
-							// Replace table engines
-							$query = $this->replace_table_engines( $query );
+							// Replace raw values
+							$query = $this->replace_raw_values( $query );
 
 							// Run SQL query
 							$this->query( $query );
+
+							// Replace table engines (Azure)
+							if ( $this->errno() === 1030 ) {
+
+								// Replace table engines
+								$query = $this->replace_table_engines( $query );
+
+								// Run SQL query
+								$this->query( $query );
+							}
 						}
 
 						// Set query offset
@@ -1212,6 +1222,36 @@ abstract class Ai1wm_Database {
 	}
 
 	/**
+	 * Check whether input is transient query
+	 *
+	 * @param  string  $input SQL statement
+	 * @return boolean
+	 */
+	protected function is_transient_query( $input ) {
+		return strpos( $input, "'_transient_" ) !== false;
+	}
+
+	/**
+	 * Check whether input is site transient query
+	 *
+	 * @param  string  $input SQL statement
+	 * @return boolean
+	 */
+	protected function is_site_transient_query( $input ) {
+		return strpos( $input, "'_site_transient_" ) !== false;
+	}
+
+	/**
+	 * Check whether input is WooCommerce session query
+	 *
+	 * @param  string  $input SQL statement
+	 * @return boolean
+	 */
+	protected function is_wc_session_query( $input ) {
+		return strpos( $input, "'_wc_session_" ) !== false;
+	}
+
+	/**
 	 * Check whether input is START TRANSACTION query
 	 *
 	 * @param  string  $input SQL statement
@@ -1260,6 +1300,27 @@ abstract class Ai1wm_Database {
 	 */
 	protected function is_insert_into_query( $input, $table ) {
 		return stripos( $input, sprintf( 'INSERT INTO `%s`', $table ) ) === 0;
+	}
+
+	/**
+	 * Check whether input is cache query
+	 *
+	 * @param  string  $input SQL statement
+	 * @return boolean
+	 */
+	public function is_cache_query( $input ) {
+		$cache = false;
+
+		// Skip cache based on table query
+		switch ( true ) {
+			case $this->is_transient_query( $input ):
+			case $this->is_site_transient_query( $input ):
+			case $this->is_wc_session_query( $input ):
+				$cache = true;
+				break;
+		}
+
+		return $cache;
 	}
 
 	/**
@@ -1379,13 +1440,30 @@ abstract class Ai1wm_Database {
 	/**
 	 * Prepare table values
 	 *
-	 * @param  mixed $input Table value
-	 * @return mixed
+	 * @param  string  $input       Table value
+	 * @param  integer $column_type Column type
+	 * @return string
 	 */
-	protected function prepare_table_values( $input ) {
+	protected function prepare_table_values( $input, $column_type ) {
 		if ( is_null( $input ) ) {
 			return 'NULL';
-		} elseif ( is_numeric( $input ) ) {
+		} elseif ( $column_type === 1 ) { // tinyint
+			return $input;
+		} elseif ( $column_type === 2 ) { // smallint
+			return $input;
+		} elseif ( $column_type === 3 ) { // integer
+			return $input;
+		} elseif ( $column_type === 4 ) { // float
+			return $input;
+		} elseif ( $column_type === 5 ) { // double
+			return $input;
+		} elseif ( $column_type === 8 ) { // bigint
+			return $input;
+		} elseif ( $column_type === 9 ) { // mediumint
+			return $input;
+		} elseif ( $column_type === 16 ) { // bit
+			return $input;
+		} elseif ( $column_type === 246 ) { // decimal
 			return $input;
 		}
 
@@ -1444,6 +1522,14 @@ abstract class Ai1wm_Database {
 	 * @return array
 	 */
 	abstract public function fetch_row( $result );
+
+	/**
+	 * Return the field from MySQL query as row
+	 *
+	 * @param  resource $result MySQL resource
+	 * @return object
+	 */
+	abstract public function fetch_field( $result );
 
 	/**
 	 * Return the number for rows from MySQL results
