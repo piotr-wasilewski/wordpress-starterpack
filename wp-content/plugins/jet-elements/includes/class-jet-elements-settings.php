@@ -47,7 +47,7 @@ if ( ! class_exists( 'Jet_Elements_Settings' ) ) {
 		public $settings = null;
 
 		/**
-		 * Avaliable Widgets array
+		 * Available Widgets array
 		 *
 		 * @var array
 		 */
@@ -81,9 +81,9 @@ if ( ! class_exists( 'Jet_Elements_Settings' ) ) {
 		}
 
 		/**
-		 * Initialize page builder module if reqired
+		 * Initialize page builder module if required
 		 *
-		 * @return [type] [description]
+		 * @return void
 		 */
 		public function init_builder() {
 
@@ -194,8 +194,8 @@ if ( ! class_exists( 'Jet_Elements_Settings' ) ) {
 
 			add_submenu_page(
 				'elementor',
-				esc_html__( 'Jet Elements Settings', 'jet-elements' ),
-				esc_html__( 'Jet Elements Settings', 'jet-elements' ),
+				esc_html__( 'JetElements Settings', 'jet-elements' ),
+				esc_html__( 'JetElements Settings', 'jet-elements' ),
 				'manage_options',
 				$this->key,
 				array( $this, 'render_page' )
@@ -210,6 +210,8 @@ if ( ! class_exists( 'Jet_Elements_Settings' ) ) {
 		 */
 		public function render_page() {
 
+			$default_avaliable_widgets = array();
+
 			foreach ( $this->avaliable_widgets as $key => $value ) {
 				$default_avaliable_widgets[ $key ] = 'true';
 			}
@@ -219,7 +221,7 @@ if ( ! class_exists( 'Jet_Elements_Settings' ) ) {
 					'jet_elements_settings' => array(
 						'type'   => 'section',
 						'scroll' => false,
-						'title'  => esc_html__( 'Jet Elements Settings', 'jet-elements' ),
+						'title'  => esc_html__( 'JetElements Settings', 'jet-elements' ),
 					),
 				)
 			);
@@ -437,8 +439,8 @@ if ( ! class_exists( 'Jet_Elements_Settings' ) ) {
 						'options'     => [
 							'section_parallax'  => esc_html__( 'Section Parallax Extension', 'jet-elements' ),
 						],
-						'title'       => esc_html__( 'Avaliable Extensions', 'jet-tricks' ),
-						'description' => esc_html__( 'List of Extension that will be available when editing the page', 'jet-tricks' ),
+						'title'       => esc_html__( 'Avaliable Extensions', 'jet-elements' ),
+						'description' => esc_html__( 'List of Extension that will be available when editing the page', 'jet-elements' ),
 						'class'       => 'jet_elements_settings_form__checkbox-group'
 					),
 				)

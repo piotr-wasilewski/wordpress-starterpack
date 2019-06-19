@@ -7,7 +7,7 @@ RewriteRule ^(.*)$ http\:\/\/projekty\.pwa\.com\.pl\/wordpress\-starterpack\/$1 
 # Start WPFC Exclude
 # End WPFC Exclude
 # Start_WPFC_Exclude_Admin_Cookie
-RewriteCond %{HTTP:Cookie} !wordpress_logged_in_[^\=]+\=pwa
+RewriteCond %{HTTP:Cookie} !wordpress_logged_in_[^\=]+\=pwa|pwa-admin
 # End_WPFC_Exclude_Admin_Cookie
 RewriteCond %{HTTP_HOST} ^projekty.pwa.com.pl
 RewriteCond %{HTTP_USER_AGENT} !(facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|Mediatoolkitbot)

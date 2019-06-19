@@ -26,6 +26,12 @@
 		}
 	}
 
+	&__image-contain {
+		.sp-image {
+			object-fit: contain;
+		}
+	}
+
 	&:before {
 
 	}

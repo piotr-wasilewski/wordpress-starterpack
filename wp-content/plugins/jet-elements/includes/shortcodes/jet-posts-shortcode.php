@@ -14,7 +14,7 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 	}
 
 	/**
-	 * Shortocde attributes
+	 * Shortcode attributes
 	 *
 	 * @return array
 	 */
@@ -61,7 +61,7 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 				'default'      => '',
 			),
 			'is_archive_template' => array(
-				'label'        => esc_html__( 'Is archive template', 'jet-elements' ),
+				'label'        => esc_html__( 'Is Archive Template', 'jet-elements' ),
 				'type'         => 'switcher',
 				'label_on'     => esc_html__( 'Yes', 'jet-elements' ),
 				'label_off'    => esc_html__( 'No', 'jet-elements' ),
@@ -133,10 +133,11 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 				),
 			),
 			'post_ids' => array(
-				'type'      => 'text',
-				'label'     => esc_html__( 'Set comma separated IDs list (10, 22, 19 etc.)', 'jet-elements' ),
-				'default'   => '',
-				'condition' => array(
+				'type'        => 'text',
+				'label'       => esc_html__( 'Set comma separated IDs list (10, 22, 19 etc.)', 'jet-elements' ),
+				'label_block' => true,
+				'default'     => '',
+				'condition'   => array(
 					'use_custom_query!'    => 'true',
 					'posts_query'          => array( 'ids' ),
 					'is_archive_template!' => 'true',
@@ -262,6 +263,16 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 					'show_image' => array( 'yes' ),
 				),
 			),
+			'bg_thumb_size' => array(
+				'type'       => 'select',
+				'label'      => esc_html__( 'Featured Image Size', 'jet-elements' ),
+				'default'    => 'full',
+				'options'    => jet_elements_tools()->get_image_sizes(),
+				'condition' => array(
+					'show_image'    => array( 'yes' ),
+					'show_image_as' => array( 'background' ),
+				),
+			),
 			'bg_size' => array(
 				'type'        => 'select',
 				'label'       => esc_html__( 'Background Image Size', 'jet-elements' ),
@@ -324,6 +335,23 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 				'step'       => 1,
 				'condition' => array(
 					'show_excerpt' => array( 'yes' ),
+				),
+			),
+			'show_terms' => array(
+				'label'        => esc_html__( 'Show Post Terms', 'jet-elements' ),
+				'type'         => 'switcher',
+				'label_on'     => esc_html__( 'Yes', 'jet-elements' ),
+				'label_off'    => esc_html__( 'No', 'jet-elements' ),
+				'return_value' => 'yes',
+				'default'      => '',
+			),
+			'show_terms_tax' => array(
+				'label'     => esc_html__( 'Show Terms From', 'jet-elements' ),
+				'type'      => 'select',
+				'default'   => 'category',
+				'options'   => jet_elements_tools()->get_taxonomies_for_options(),
+				'condition' => array(
+					'show_terms' => 'yes',
 				),
 			),
 			'show_meta' => array(
@@ -479,7 +507,7 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 	/**
 	 * Get related query arguments
 	 *
-	 * @return [type] [description]
+	 * @return array
 	 */
 	public function get_related_query_args() {
 
@@ -575,9 +603,9 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 	}
 
 	/**
-	 * Posts shortocde function
+	 * Posts shortcode function
 	 *
-	 * @param  array  $atts Attributes array.
+	 * @param  string $content
 	 * @return string
 	 */
 	public function _shortcode( $content = null ) {
@@ -638,7 +666,7 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 	}
 
 	/**
-	 * Add box backgroud image
+	 * Add box background image
 	 */
 	public function add_box_bg() {
 
@@ -654,11 +682,12 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 			return;
 		}
 
-		$thumb_id  = get_post_thumbnail_id();
-		$thumb_url = wp_get_attachment_image_url( $thumb_id, 'full' );
+		$thumb_id   = get_post_thumbnail_id();
+		$thumb_size = $this->get_attr( 'bg_thumb_size' );
+		$thumb_url  = wp_get_attachment_image_url( $thumb_id, $thumb_size );
 
 		printf(
-			' style="background-image: url(\'%1$s\');background-repeat:no-repeat;background-size: %2$s;background-position: %3$s;"',
+			' style="background-image: url(\'%1$s\'); background-repeat: no-repeat; background-size: %2$s; background-position: %3$s;"',
 			$thumb_url,
 			$this->get_attr( 'bg_size' ),
 			$this->get_attr( 'bg_position' )
@@ -669,8 +698,10 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 	/**
 	 * Render meta for passed position
 	 *
-	 * @param  string $position [description]
-	 * @return [type]           [description]
+	 * @param  string $position
+	 * @param  string $base
+	 * @param  array  $context
+	 * @return void
 	 */
 	public function render_meta( $position = '', $base = '', $context = array( 'before' ) ) {
 
@@ -734,7 +765,49 @@ class Jet_Posts_Shortcode extends Jet_Elements_Shortcode_Base {
 
 		}
 
+		if ( empty( $result ) ) {
+			return;
+		}
+
 		printf( '<div class="%1$s">%2$s</div>', $base, $result );
+
+	}
+
+	/**
+	 * Render post terms.
+	 *
+	 * @return void
+	 */
+	public function render_post_terms() {
+
+		$show = $this->get_attr( 'show_terms' );
+
+		if ( 'yes' !== $show ) {
+			return;
+		}
+
+		$tax   = $this->get_attr( 'show_terms_tax' );
+		$terms = wp_get_post_terms( get_the_ID(), esc_attr( $tax ) );
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return;
+		}
+
+		$num   = 1;
+		$terms = array_slice( $terms, 0, $num );
+
+		$format = apply_filters(
+			'jet-elements/shortcodes/jet-posts/post-term-format',
+			'<a href="%2$s" class="jet-posts__terms-link">%1$s</a>'
+		);
+
+		$result = '';
+
+		foreach ( $terms as $term ) {
+			$result .= sprintf( $format, $term->name, get_term_link( (int) $term->term_id, $tax ) );
+		}
+
+		printf( '<div class="jet-posts__terms">%s</div>', $result );
 
 	}
 

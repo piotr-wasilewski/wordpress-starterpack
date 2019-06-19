@@ -51,9 +51,9 @@
 		onPreviewLoaded: function() {
 			var elementorFrontend = $('#elementor-preview-iframe')[0].contentWindow.elementorFrontend;
 
-			elementorFrontend.hooks.addAction( 'frontend/element_ready/jet-dropbar.default', function( $scope ){
+			elementorFrontend.hooks.addAction( 'frontend/element_ready/widget', function( $scope ){
 
-				$scope.find( '.jet-dropbar-edit-link' ).on( 'click', function( event ) {
+				$scope.find( '.jet-elements-edit-template-link' ).on( 'click', function( event ) {
 					window.open( $( this ).attr( 'href' ) );
 				} );
 			} );

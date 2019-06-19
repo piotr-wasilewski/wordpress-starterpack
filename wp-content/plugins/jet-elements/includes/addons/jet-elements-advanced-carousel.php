@@ -111,20 +111,33 @@ class Jet_Elements_Advanced_Carousel extends Jet_Elements_Base {
 		);
 
 		$repeater->add_control(
+			'item_link_rel',
+			array(
+				'label'        => esc_html__( 'Add nofollow', 'jet-elements' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'return_value' => 'nofollow',
+				'condition'    => array(
+					'item_link!' => '',
+				),
+			)
+		);
+
+		$repeater->add_control(
 			'item_button_text',
 			array(
 				'label'   => esc_html__( 'Item Button Text', 'jet-elements' ),
 				'type'    => Controls_Manager::TEXT,
 				'default' => '',
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$this->add_control(
 			'items_list',
 			array(
-				'type'        => Controls_Manager::REPEATER,
-				'fields'      => array_values( $repeater->get_controls() ),
-				'default'     => array(
+				'type'    => Controls_Manager::REPEATER,
+				'fields'  => array_values( $repeater->get_controls() ),
+				'default' => array(
 					array(
 						'item_image' => array(
 							'url' => Utils::get_placeholder_image_src(),
@@ -193,6 +206,38 @@ class Jet_Elements_Advanced_Carousel extends Jet_Elements_Base {
 				'label'      => esc_html__( 'Images Size', 'jet-elements' ),
 				'default'    => 'full',
 				'options'    => jet_elements_tools()->get_image_sizes(),
+			)
+		);
+
+		$this->add_control(
+			'title_html_tag',
+			array(
+				'label'   => esc_html__( 'Title HTML Tag', 'jet-elements' ),
+				'type'    => Controls_Manager::SELECT,
+				'options' => array(
+					'h1'   => esc_html__( 'H1', 'jet-elements' ),
+					'h2'   => esc_html__( 'H2', 'jet-elements' ),
+					'h3'   => esc_html__( 'H3', 'jet-elements' ),
+					'h4'   => esc_html__( 'H4', 'jet-elements' ),
+					'h5'   => esc_html__( 'H5', 'jet-elements' ),
+					'h6'   => esc_html__( 'H6', 'jet-elements' ),
+					'div'  => esc_html__( 'div', 'jet-elements' ),
+					'span' => esc_html__( 'span', 'jet-elements' ),
+					'p'    => esc_html__( 'p', 'jet-elements' ),
+				),
+				'default' => 'h5',
+			)
+		);
+
+		$this->add_control(
+			'link_title',
+			array(
+				'label'     => esc_html__( 'Link Title', 'jet-elements' ),
+				'type'      => Controls_Manager::SWITCHER,
+				'default'   => '',
+				'condition' => array(
+					'item_layout' => 'simple',
+				),
 			)
 		);
 
@@ -347,6 +392,18 @@ class Jet_Elements_Advanced_Carousel extends Jet_Elements_Base {
 				'label_off'    => esc_html__( 'No', 'jet-elements' ),
 				'return_value' => 'true',
 				'default'      => 'true',
+			)
+		);
+
+		$this->add_control(
+			'centered',
+			array(
+				'label'        => esc_html__( 'Center Mode', 'jet-elements' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'jet-elements' ),
+				'label_off'    => esc_html__( 'No', 'jet-elements' ),
+				'return_value' => 'true',
+				'default'      => 'false',
 			)
 		);
 
@@ -1650,6 +1707,7 @@ class Jet_Elements_Advanced_Carousel extends Jet_Elements_Base {
 			'autoplaySpeed'  => absint( $settings['autoplay_speed'] ),
 			'autoplay'       => filter_var( $settings['autoplay'], FILTER_VALIDATE_BOOLEAN ),
 			'infinite'       => filter_var( $settings['infinite'], FILTER_VALIDATE_BOOLEAN ),
+			'centerMode'     => filter_var( $settings['centered'], FILTER_VALIDATE_BOOLEAN ),
 			'pauseOnHover'   => filter_var( $settings['pause_on_hover'], FILTER_VALIDATE_BOOLEAN ),
 			'speed'          => absint( $settings['speed'] ),
 			'arrows'         => filter_var( $settings['arrows'], FILTER_VALIDATE_BOOLEAN ),
@@ -1688,7 +1746,13 @@ class Jet_Elements_Advanced_Carousel extends Jet_Elements_Base {
 			$url = $image['url'];
 		}
 
-		return sprintf( '<img src="%1$s" alt="" class="%2$s">', $url, $class );
+		if ( empty( $url ) ) {
+			return;
+		}
+
+		$alt = esc_attr( Control_Media::get_image_alt( $image ) );
+
+		return sprintf( '<img src="%1$s" class="%2$s" alt="%3$s">', $url, $class, $alt );
 
 	}
 

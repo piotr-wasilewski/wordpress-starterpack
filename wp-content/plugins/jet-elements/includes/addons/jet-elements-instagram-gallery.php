@@ -118,8 +118,9 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 		$this->add_control(
 			'hashtag',
 			array(
-				'label' => esc_html__( 'Hashtag (enter without `#` symbol)', 'jet-elements' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'       => esc_html__( 'Hashtag (enter without `#` symbol)', 'jet-elements' ),
+				'label_block' => true,
+				'type'        => Controls_Manager::TEXT,
 				'condition' => array(
 					'endpoint' => 'hashtag',
 				),
@@ -197,7 +198,7 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 6,
 				'min'     => 1,
-				'max'     => 18,
+				'max'     => 50,
 				'step'    => 1,
 			)
 		);
@@ -211,6 +212,22 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 				'label_off'    => esc_html__( 'No', 'jet-elements' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
+			)
+		);
+
+		$this->add_control(
+			'post_link_type',
+			array(
+				'label'   => esc_html__( 'Link type', 'jet-elements' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'post-link',
+				'options' => array(
+					'post-link' => esc_html__( 'Post Link', 'jet-elements' ),
+					'lightbox'  => esc_html__( 'Lightbox', 'jet-elements' ),
+				),
+				'condition' => array(
+					'post_link' => 'yes',
+				),
 			)
 		);
 
@@ -913,6 +930,7 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 			'target'              => ( 'hashtag' === $endpoint ) ? sanitize_text_field( $settings[ $endpoint ] ) : 'users',
 			'posts_counter'       => $settings['posts_counter'],
 			'post_link'           => filter_var( $settings['post_link'], FILTER_VALIDATE_BOOLEAN ),
+			'post_link_type'      => $settings['post_link_type'],
 			'photo_size'          => $settings['photo_size'],
 			'post_caption'        => filter_var( $settings['post_caption'], FILTER_VALIDATE_BOOLEAN ),
 			'post_caption_length' => ! empty( $settings['post_caption_length'] ) ? $settings['post_caption_length'] : 50,
@@ -923,7 +941,7 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 
 		$posts = $this->get_posts( $this->config );
 
-		if ( ! empty( $posts ) ) {
+		if ( ! empty( $posts ) && ! is_wp_error( $posts ) ) {
 
 			foreach ( $posts as $post_data ) {
 				$item_html   = '';
@@ -940,10 +958,20 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 				);
 
 				if ( $this->config['post_link'] ) {
-					$link_format = '<a class="jet-instagram-gallery__link" href="%s" target="_blank" rel="nofollow">%s</a>';
+					$link_format = '<a class="jet-instagram-gallery__link" href="%1$s" target="_blank" rel="nofollow"%3$s>%2$s</a>';
 					$link_format = apply_filters( 'jet-elements/instagram-gallery/link-format', $link_format );
 
-					$item_html = sprintf( $link_format, esc_url( $link ), $item_html );
+					$attr = '';
+
+					if ( 'lightbox' === $this->config['post_link_type'] ) {
+
+						$img_data = $this->get_image_data( $post_data, 'high' );
+
+						$link = $img_data['src'];
+						$attr = ' data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="' . $this->get_id() . '"';
+					}
+
+					$item_html = sprintf( $link_format, esc_url( $link ), $item_html, $attr );
 				}
 
 				if ( 'grid' === $settings['layout_type'] ) {
@@ -958,9 +986,11 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 			}
 
 		} else {
+			$message = is_wp_error( $posts ) ? $posts->get_error_message() : esc_html__( 'Posts not found', 'jet-elements' );
+
 			$html .= sprintf(
-				'<div class="jet-instagram-gallery__item">%s</div>',
-				esc_html__( 'Posts not found', 'jet-elements' )
+				'<div class="jet-instagram-gallery__item"><div class="jet-instagram-gallery__inner">%s</div></div>',
+				$message
 			);
 		}
 
@@ -978,17 +1008,11 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 
 		$size = $this->get_settings_for_display( 'photo_size' );
 
-		$thumbnail_resources = $item['thumbnail_resources'];
+		$img_data = $this->get_image_data( $item, $size );
 
-		if ( array_key_exists( $size, $thumbnail_resources ) ) {
-			$width = $thumbnail_resources[ $size ]['config_width'];
-			$height = $thumbnail_resources[ $size ]['config_height'];
-			$post_photo_url = $thumbnail_resources[ $size ]['src'];
-		} else {
-			$width = isset( $item['dimensions']['width'] ) ? $item['dimensions']['width'] : '';
-			$height = isset( $item['dimensions']['height'] ) ? $item['dimensions']['height'] : '';
-			$post_photo_url = isset( $item['image'] ) ? $item['image'] : '';
-		}
+		$width          = $img_data['width'];
+		$height         = $img_data['height'];
+		$post_photo_url = $img_data['src'];
 
 		if ( empty( $post_photo_url ) ) {
 			return '';
@@ -1001,6 +1025,33 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 		$image = sprintf( $photo_format, esc_url( $post_photo_url ) );
 
 		return $image;
+	}
+
+	/**
+	 * Get image data
+	 *
+	 * @param  array  $item Item photo data.
+	 * @param  string $size Image size.
+	 * @return array
+	 */
+	public function get_image_data( $item, $size = 'high' ) {
+		$thumbnail_resources = $item['thumbnail_resources'];
+
+		if ( array_key_exists( $size, $thumbnail_resources ) ) {
+			$width = $thumbnail_resources[ $size ]['config_width'];
+			$height = $thumbnail_resources[ $size ]['config_height'];
+			$post_photo_url = $thumbnail_resources[ $size ]['src'];
+		} else {
+			$width = isset( $item['dimensions']['width'] ) ? $item['dimensions']['width'] : '';
+			$height = isset( $item['dimensions']['height'] ) ? $item['dimensions']['height'] : '';
+			$post_photo_url = isset( $item['image'] ) ? $item['image'] : '';
+		}
+
+		return array(
+			'width'  => $width,
+			'height' => $height,
+			'src'    => $post_photo_url,
+		);
 	}
 
 	/**
@@ -1079,7 +1130,7 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 		$response = $this->remote_get( $config );
 
 		if ( is_wp_error( $response ) ) {
-			return array();
+			return $response;
 		}
 
 		$data = ( 'hashtag' === $config['endpoint'] ) ? $this->get_response_data( $response ) : $this->get_response_data_from_official_api( $response );
@@ -1097,7 +1148,7 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 	 * Retrieve the raw response from the HTTP request using the GET method.
 	 *
 	 * @since  1.0.0
-	 * @return array|WP_Error
+	 * @return array|object
 	 */
 	public function remote_get( $config ) {
 
@@ -1110,14 +1161,23 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 
 		$response_code = wp_remote_retrieve_response_code( $response );
 
-		if ( '' === $response_code ) {
-			return new \WP_Error;
+		if ( 200 !== $response_code ) {
+
+			$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+			if ( is_array( $body ) && isset( $body['meta']['error_message'] ) ) {
+				$message = $body['meta']['error_message'];
+			} else {
+				$message = esc_html__( 'Posts not found', 'jet-elements' );
+			}
+
+			return new \WP_Error( $response_code, $message );
 		}
 
 		$result = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( ! is_array( $result ) ) {
-			return new \WP_Error;
+			return new \WP_Error( 'invalid-data', esc_html__( 'Invalid data', 'jet-elements' ) );
 		}
 
 		return $result;

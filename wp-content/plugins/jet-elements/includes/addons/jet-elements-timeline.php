@@ -56,6 +56,8 @@ class Jet_Elements_Timeline extends Jet_Elements_Base {
 				'card_title'         => '.timeline-item__card-title',
 				'card_desc'          => '.timeline-item__card-desc',
 				'card_arrow'         => '.timeline-item__card-arrow',
+				'card_btn_wrap'      => '.timeline-item__card-btn-wrap',
+				'card_btn'           => '.timeline-item__card-btn',
 			)
 		);
 
@@ -170,6 +172,38 @@ class Jet_Elements_Timeline extends Jet_Elements_Base {
 			)
 		);
 
+		$repeater->add_control(
+			'item_btn',
+			array(
+				'label'     => esc_html__( 'Button', 'jet-elements' ),
+				'type'      => Controls_Manager::HEADING,
+				'separator' => 'before',
+			)
+		);
+
+		$repeater->add_control(
+			'item_btn_text',
+			array(
+				'label'   => esc_html__( 'Text', 'jet-elements' ),
+				'type'    => Controls_Manager::TEXT,
+				'default' => '',
+				'dynamic' => array(
+					'active' => true,
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'item_btn_url',
+			array(
+				'label'   => esc_html__( 'Link', 'jet-elements' ),
+				'type'    => Controls_Manager::URL,
+				'dynamic' => array(
+					'active' => true,
+				),
+			)
+		);
+
 		$this->add_control(
 			'cards_list',
 			array(
@@ -206,6 +240,26 @@ class Jet_Elements_Timeline extends Jet_Elements_Base {
 					),
 				),
 				'title_field' => '{{{ item_title }}}',
+			)
+		);
+
+		$this->add_control(
+			'title_tag',
+			array(
+				'label'   => esc_html__( 'Title HTML Tag', 'jet-elements' ),
+				'type'    => Controls_Manager::SELECT,
+				'options' => array(
+					'h1'   => esc_html__( 'H1', 'jet-elements' ),
+					'h2'   => esc_html__( 'H2', 'jet-elements' ),
+					'h3'   => esc_html__( 'H3', 'jet-elements' ),
+					'h4'   => esc_html__( 'H4', 'jet-elements' ),
+					'h5'   => esc_html__( 'H5', 'jet-elements' ),
+					'h6'   => esc_html__( 'H6', 'jet-elements' ),
+					'div'  => esc_html__( 'div', 'jet-elements' ),
+					'p'    => esc_html__( 'p', 'jet-elements' ),
+				),
+				'default'   => 'h5',
+				'separator' => 'before',
 			)
 		);
 
@@ -401,6 +455,164 @@ class Jet_Elements_Timeline extends Jet_Elements_Base {
 		);
 
 		$this->_control_section_card_desc( $css_scheme );
+
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'section_button_style',
+			array(
+				'label' => esc_html__( 'Button', 'jet-elements' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'button_typography',
+				'scheme'   => Scheme_Typography::TYPOGRAPHY_4,
+				'selector' => '{{WRAPPER}} ' . $css_scheme['card_btn'],
+			)
+		);
+
+		$this->start_controls_tabs( 'tabs_button_style' );
+
+		$this->start_controls_tab(
+			'tab_button_normal',
+			array(
+				'label' => esc_html__( 'Normal', 'jet-elements' ),
+			)
+		);
+
+		$this->add_control(
+			'button_color',
+			array(
+				'label'     => esc_html__( 'Text Color', 'jet-elements' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '',
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['card_btn'] => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'button_background_color',
+			array(
+				'label'     => esc_html__( 'Background Color', 'jet-elements' ),
+				'type'      => Controls_Manager::COLOR,
+				'scheme'    => array(
+					'type'  => Scheme_Color::get_type(),
+					'value' => Scheme_Color::COLOR_4,
+				),
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['card_btn'] => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'tab_button_hover',
+			array(
+				'label' => esc_html__( 'Hover', 'jet-elements' ),
+			)
+		);
+
+		$this->add_control(
+			'button_hover_color',
+			array(
+				'label'     => esc_html__( 'Text Color', 'jet-elements' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['card_btn'] . ':hover' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'button_hover_background_color',
+			array(
+				'label'     => esc_html__( 'Background Color', 'jet-elements' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['card_btn'] . ':hover' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'button_hover_border_color',
+			array(
+				'label'     => esc_html__( 'Border Color', 'jet-elements' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['card_btn'] . ':hover' => 'border-color: {{VALUE}};',
+				),
+				'condition' => array(
+					'button_border_border!' => '',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'      => 'button_border',
+				'selector'  => '{{WRAPPER}} ' . $css_scheme['card_btn'],
+				'separator' => 'before',
+			)
+		);
+
+		$this->add_control(
+			'button_border_radius',
+			array(
+				'label'      => esc_html__( 'Border Radius', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['card_btn'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			array(
+				'name'     => 'button_box_shadow',
+				'selector' => '{{WRAPPER}} ' . $css_scheme['card_btn'],
+			)
+		);
+
+		$this->add_responsive_control(
+			'button_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['card_btn'] => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'separator'  => 'before',
+			)
+		);
+
+		$this->add_responsive_control(
+			'button_margin',
+			array(
+				'label'      => esc_html__( 'Margin', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['card_btn_wrap'] => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
 
 		$this->end_controls_section();
 
@@ -1283,9 +1495,7 @@ class Jet_Elements_Timeline extends Jet_Elements_Base {
 			array(
 				'label'      => esc_html__( 'Icon Size', 'jet-elements' ),
 				'type'       => Controls_Manager::SLIDER,
-				'size_units' => array(
-					'px',
-				),
+				'size_units' => array( 'px', 'em', 'rem' ),
 				'range'      => array(
 					'px' => array(
 						'min' => 5,
@@ -1311,9 +1521,7 @@ class Jet_Elements_Timeline extends Jet_Elements_Base {
 			array(
 				'label'      => esc_html__( 'Point Size', 'jet-elements' ),
 				'type'       => Controls_Manager::SLIDER,
-				'size_units' => array(
-					'px',
-				),
+				'size_units' => array( 'px', 'em', 'rem' ),
 				'range'      => array(
 					'px' => array(
 						'min' => 10,
@@ -1328,8 +1536,9 @@ class Jet_Elements_Timeline extends Jet_Elements_Base {
 					'{{WRAPPER}} ' . $css_scheme['item_point_content']               => 'height:{{SIZE}}{{UNIT}}; width: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .jet-timeline--align-center ' . $css_scheme['line'] => 'margin-left: calc( {{SIZE}}{{UNIT}} / 2 ); margin-right: calc( {{SIZE}}{{UNIT}} / 2 );',
 					'{{WRAPPER}} .jet-timeline--align-left ' . $css_scheme['line']   => 'margin-left: calc( {{SIZE}}{{UNIT}} / 2 );',
-					'{{WRAPPER}} .jet-timeline--align-right ' . $css_scheme['line']   => 'margin-right: calc( {{SIZE}}{{UNIT}} / 2 );',
+					'{{WRAPPER}} .jet-timeline--align-right ' . $css_scheme['line']  => 'margin-right: calc( {{SIZE}}{{UNIT}} / 2 );',
 				),
+				'separator' => 'before',
 			)
 		);
 
@@ -1353,6 +1562,7 @@ class Jet_Elements_Timeline extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['item_point_content'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
+				'separator' => 'after',
 			)
 		);
 
@@ -1579,6 +1789,56 @@ class Jet_Elements_Timeline extends Jet_Elements_Base {
 		$this->__close_wrap();
 
 		$this->__processed_item_index = 0;
+	}
+	
+	public function __get_timeline_image() {
+		$image_item = $this->__processed_item['item_image'];
+		
+		if ( empty( $image_item['url'] ) ) {
+			return;
+		}
+		
+		return sprintf( '<div class="timeline-item__card-img"><img src="%1$s" alt="%2$s"></div>',
+			$image_item['url'],
+			esc_attr( Control_Media::get_image_alt( $image_item ) )
+		);
+	}
+
+	public function __get_timeline_button() {
+		$item_settings = $this->__processed_item;
+
+		if ( empty( $item_settings['item_btn_text'] ) || empty( $item_settings['item_btn_url']['url'] ) ) {
+			return false;
+		}
+
+		$this->add_render_attribute(
+			'button_' . $item_settings['_id'],
+			array(
+				'class' => array(
+					'timeline-item__card-btn',
+					'elementor-button',
+					'elementor-size-md',
+				),
+				'href' => esc_url( $item_settings['item_btn_url']['url'] ),
+				'role' => 'button',
+			)
+		);
+
+		if ( $item_settings['item_btn_url']['is_external'] ) {
+			$this->add_render_attribute( 'button_' . $item_settings['_id'], 'target', '_blank' );
+		}
+
+		if ( $item_settings['item_btn_url']['nofollow'] ) {
+			$this->add_render_attribute( 'button_' . $item_settings['_id'], 'rel', 'nofollow' );
+		}
+
+		$format = apply_filters( 'jet-elements/timeline/button-format', '<div class="timeline-item__card-btn-wrap"><a %2$s>%1$s</a></div>' );
+
+		return sprintf(
+			$format,
+			$item_settings['item_btn_text'],
+			$this->get_render_attribute_string( 'button_' . $item_settings['_id'] )
+		);
 	}
 
 }

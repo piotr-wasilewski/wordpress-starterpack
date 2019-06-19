@@ -12,6 +12,7 @@ $title_tag  = ! empty( $settings['item_title_size'] ) ? $settings['item_title_si
 		$this->__render_image( $item_settings );
 		echo $this->__loop_item( array( 'item_title' ) , '<' . $title_tag .' class="jet-hor-timeline-item__card-title">%s</' . $title_tag . '>' );
 		echo $this->__loop_item( array( 'item_desc' ), '<div class="jet-hor-timeline-item__card-desc">%s</div>' );
+		$this->__render_button( $item_settings );
 		?>
 	</div>
 	<?php if ( $show_arrow ) { ?>

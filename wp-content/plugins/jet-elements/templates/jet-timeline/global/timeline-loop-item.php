@@ -11,6 +11,8 @@ $classes = array(
 	'elementor-repeater-item-' . $item_settings['_id']
 );
 
+$title_tag = $settings['title_tag'];
+
 $item_meta_attr = $this->get_item_inline_editing_attributes( 'item_meta', 'cards_list', $this->__processed_item_index, 'timeline-item__meta-content' );
 $item_title_attr = $this->get_item_inline_editing_attributes( 'item_title', 'cards_list', $this->__processed_item_index, 'timeline-item__card-title' );
 $item_desc_attr = $this->get_item_inline_editing_attributes( 'item_desc', 'cards_list', $this->__processed_item_index, 'timeline-item__card-desc' );
@@ -23,7 +25,7 @@ $this->__processed_item_index += 1;
 		<div class="timeline-item__card-inner">
 				<?php
 					if ( 'yes' === $item_settings['show_item_image'] ) {
-						echo $this->__loop_item( array( 'item_image', 'url' ), '<div class="timeline-item__card-img"><img src="%s" alt=""></div>' );
+						echo $this->__get_timeline_image();
 					}
 				?>
 				<div class="timeline-item__card-content">
@@ -31,8 +33,9 @@ $this->__processed_item_index += 1;
 						echo '<div class="timeline-item__meta">';
 						echo $this->__loop_item( array( 'item_meta' ), '<div ' . $item_meta_attr . '>%s</div>' );
 						echo '</div>';
-						echo $this->__loop_item( array( 'item_title' ) , '<h5 ' . $item_title_attr . '>%1s</h5>' );
+						echo $this->__loop_item( array( 'item_title' ) , '<' . $title_tag . ' ' . $item_title_attr . '>%1s</' . $title_tag . '>' );
 						echo $this->__loop_item( array( 'item_desc' ), '<div ' . $item_desc_attr . '>%s</div>' );
+						echo $this->__get_timeline_button();
 					?>
 				</div>
 		</div>

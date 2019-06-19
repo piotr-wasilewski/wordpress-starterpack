@@ -82,6 +82,19 @@ class Jet_Elements_Animated_Text extends Jet_Elements_Base {
 			)
 		);
 
+		$repeater->add_control(
+			'item_text_direction',
+			array(
+				'label'   => esc_html__( 'Text Direction', 'jet-elements' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'ltr',
+				'options' => array(
+					'ltr' => esc_html__( 'LTR', 'jet-elements' ),
+					'rtl' => esc_html__( 'RTL', 'jet-elements' ),
+				),
+			)
+		);
+
 		$this->add_control(
 			'animated_text_list',
 			array(
@@ -174,7 +187,7 @@ class Jet_Elements_Animated_Text extends Jet_Elements_Base {
 				'default' => 'center',
 				'options' => array(
 					'flex-start'    => array(
-						'title' => esc_html__( 'Left', 'jet-elements' ),
+						'title' => esc_html__( 'Start', 'jet-elements' ),
 						'icon'  => 'fa fa-align-left',
 					),
 					'center' => array(
@@ -182,7 +195,7 @@ class Jet_Elements_Animated_Text extends Jet_Elements_Base {
 						'icon'  => 'fa fa-align-center',
 					),
 					'flex-end' => array(
-						'title' => esc_html__( 'Right', 'jet-elements' ),
+						'title' => esc_html__( 'End', 'jet-elements' ),
 						'icon'  => 'fa fa-align-right',
 					),
 				),

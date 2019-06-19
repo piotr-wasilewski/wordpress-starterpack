@@ -116,7 +116,9 @@ if ( ! class_exists( 'Jet_Elementst_Post_Tools' ) ) {
 				}
 			}
 
-			$html = apply_filters( 'the_content', $html );
+			if ( 'post_content' === $content_type && -1 === $args['length'] ) {
+				$html = apply_filters( 'the_content', $html );
+			}
 
 			return $this->output_method( $html, $args['echo'] );
 		}

@@ -3,6 +3,28 @@
 	
 	svg {
 		min-width: 20px;
+
+		> circle,
+		> ellipse,
+		> polygon,
+		> path,
+		> rect {
+			&:not([stroke]){
+				stroke: none;
+			}
+			&:not([stroke-width]){
+				stroke-width: 2px;
+			}
+			&:not([stroke-linecap]){
+				stroke-linecap: butt;
+			}
+			&:not([stroke-dasharray]){
+				stroke-dasharray: none;
+			}
+			&:not([stroke-miterlimit]){
+				stroke-miterlimit: 4;
+			}
+		}
 	}
 	
 	&--custom-width {
@@ -18,28 +40,6 @@
 		svg {
 			fill: currentColor;
 			stroke: currentColor;
-		}
-	}
-	
-	circle,
-	ellipse,
-	polygon,
-	path,
-	rect {
-		&:not([stroke]){
-			stroke: none;
-		}
-		&:not([stroke-width]){
-			stroke-width: 2px;
-		}
-		&:not([stroke-linecap]){
-			stroke-linecap: butt;
-		}
-		&:not([stroke-dasharray]){
-			stroke-dasharray: none;
-		}
-		&:not([stroke-miterlimit]){
-			stroke-miterlimit: 4;
 		}
 	}
 }

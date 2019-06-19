@@ -98,8 +98,9 @@ class Jet_Elements_Table extends Jet_Elements_Base {
 		$table_header_repeater->add_control(
 			'cell_text',
 			array(
-				'label' => esc_html__( 'Text', 'jet-elements' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Text', 'jet-elements' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
@@ -132,8 +133,9 @@ class Jet_Elements_Table extends Jet_Elements_Base {
 		$table_header_repeater->add_control(
 			'cell_image',
 			array(
-				'label' => esc_html__( 'Image', 'jet-elements' ),
-				'type'  => Controls_Manager::MEDIA,
+				'label'     => esc_html__( 'Image', 'jet-elements' ),
+				'type'      => Controls_Manager::MEDIA,
+				'dynamic'   => array( 'active' => true ),
 				'condition' => array(
 					'add_icon_or_image' => 'image',
 				),
@@ -342,8 +344,9 @@ class Jet_Elements_Table extends Jet_Elements_Base {
 		$table_body_repeater->add_control(
 			'cell_text',
 			array(
-				'label' => esc_html__( 'Text', 'jet-elements' ),
-				'type'  => Controls_Manager::TEXTAREA,
+				'label'     => esc_html__( 'Text', 'jet-elements' ),
+				'type'      => Controls_Manager::TEXTAREA,
+				'dynamic'   => array( 'active' => true ),
 				'condition' => array(
 					'action' => 'cell',
 				),
@@ -353,10 +356,11 @@ class Jet_Elements_Table extends Jet_Elements_Base {
 		$table_body_repeater->add_control(
 			'cell_link',
 			array(
-				'label' => esc_html__( 'Link', 'jet-elements' ),
-				'type'  => Controls_Manager::URL,
+				'label'       => esc_html__( 'Link', 'jet-elements' ),
+				'type'        => Controls_Manager::URL,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'https://your-link.com', 'jet-elements' ),
-				'condition' => array(
+				'condition'   => array(
 					'action' => 'cell',
 				),
 			)
@@ -395,8 +399,9 @@ class Jet_Elements_Table extends Jet_Elements_Base {
 		$table_body_repeater->add_control(
 			'cell_image',
 			array(
-				'label' => esc_html__( 'Image', 'jet-elements' ),
-				'type'  => Controls_Manager::MEDIA,
+				'label'     => esc_html__( 'Image', 'jet-elements' ),
+				'type'      => Controls_Manager::MEDIA,
+				'dynamic'   => array( 'active' => true ),
 				'condition' => array(
 					'action' => 'cell',
 					'add_icon_or_image' => 'image',

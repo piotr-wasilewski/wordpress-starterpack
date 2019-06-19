@@ -12,6 +12,8 @@
 
 		include $this->get_template( 'item-thumb' );
 
+		$this->render_post_terms();
+
 		echo '<div class="jet-posts__inner-content">';
 
 			include $this->get_template( 'item-title' );

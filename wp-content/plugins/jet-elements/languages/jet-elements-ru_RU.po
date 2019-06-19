@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Jet Elements for Elementor\n"
+"Project-Id-Version: JetElements for Elementor\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-02-11 14:47+0200\n"
 "PO-Revision-Date: 2019-02-11 14:47+0200\n"
@@ -5917,7 +5917,7 @@ msgid "Meta Label"
 msgstr "Мета заголовок"
 
 #: includes/addons/jet-elements-posts.php:2278
-msgid "Dispaly Meta Label and Value"
+msgid "Display Meta Label and Value"
 msgstr "Отображать мета заголовок и значение"
 
 #: includes/addons/jet-elements-posts.php:2282
@@ -8333,8 +8333,8 @@ msgid "Please specify a valid e-mail"
 msgstr "Пожалуйста, обозначьте действительный email"
 
 #: includes/class-jet-elements-integration.php:386
-msgid "Jet Elements"
-msgstr "Jet Elements"
+msgid "JetElements"
+msgstr "JetElements"
 
 #: includes/class-jet-elements-settings.php:98
 msgid "Settings saved"
@@ -8343,8 +8343,8 @@ msgstr "Настройки сохранены"
 #: includes/class-jet-elements-settings.php:181
 #: includes/class-jet-elements-settings.php:182
 #: includes/class-jet-elements-settings.php:206
-msgid "Jet Elements Settings"
-msgstr "Настройки Jet Elements"
+msgid "JetElements Settings"
+msgstr "Настройки JetElements"
 
 #: includes/class-jet-elements-settings.php:250
 msgid "General settings"
@@ -9829,23 +9829,23 @@ msgstr "Шаблоны Jet"
 
 #: jet-elements.php:275
 #, php-format
-msgid "Jet Elements for Elementor requires the following plugin: %1$s."
-msgid_plural "Jet Elements for Elementor requires the following plugins: %1$s."
+msgid "JetElements for Elementor requires the following plugin: %1$s."
+msgid_plural "JetElements for Elementor requires the following plugins: %1$s."
 msgstr[0] ""
-"Jet Elements для Elementor требует установить следующий плагин: %1$s."
+"JetElements для Elementor требует установить следующий плагин: %1$s."
 msgstr[1] ""
-"Jet Elements для Elementor требует установить следующие плагины: %1$s."
+"JetElements для Elementor требует установить следующие плагины: %1$s."
 msgstr[2] ""
-"Jet Elements для Elementor требует установить следующий плагин: %1$s."
+"JetElements для Elementor требует установить следующий плагин: %1$s."
 
 #: jet-elements.php:280
 #, php-format
-msgid "Jet Elements for Elementor recommends the following plugin: %1$s."
+msgid "JetElements for Elementor recommends the following plugin: %1$s."
 msgid_plural ""
-"Jet Elements for Elementor recommends the following plugins: %1$s."
-msgstr[0] "Jet Elements для Elementor рекоммендует следующий плагин: %1$s."
-msgstr[1] "Jet Elements для Elementor рекоммендует следующие плагины: %1$s."
-msgstr[2] "Jet Elements для Elementor рекоммендует следующий плагин: %1$s."
+"JetElements for Elementor recommends the following plugins: %1$s."
+msgstr[0] "JetElements для Elementor рекоммендует следующий плагин: %1$s."
+msgstr[1] "JetElements для Elementor рекоммендует следующие плагины: %1$s."
+msgstr[2] "JetElements для Elementor рекоммендует следующий плагин: %1$s."
 
 #: jet-elements.php:419
 msgid "Changelog"

@@ -1024,7 +1024,7 @@ class Jet_Elements_Weather extends Jet_Elements_Base {
 				),
 				'sunrise'  => $api_data['forecast']['forecastday'][0]['astro']['sunrise'],
 				'sunset'   => $api_data['forecast']['forecastday'][0]['astro']['sunset'],
-				'week_day' => date_i18n( 'l' ),
+				//'week_day' => date_i18n( 'l' ),
 			),
 
 			// Forecast data
@@ -1034,6 +1034,7 @@ class Jet_Elements_Weather extends Jet_Elements_Base {
 		for ( $i = 1; $i <= 6; $i ++ ) {
 			$data['forecast'][] = array(
 				'code'     => $api_data['forecast']['forecastday'][ $i ]['day']['condition']['code'],
+				'date'     => $api_data['forecast']['forecastday'][ $i ]['date'],
 				'week_day' => $this->get_week_day_from_date_format( 'Y-m-d', $api_data['forecast']['forecastday'][ $i ]['date'] ),
 				'temp_min' => array(
 					'c' => round( $api_data['forecast']['forecastday'][ $i ]['day']['mintemp_c'] ),

@@ -22,9 +22,11 @@ $forecast_days = ! empty( $settings['forecast_count']['size'] ) ? abs( $settings
 $forecast_days = ( $forecast_days <= $forecast_data_count ) ? $forecast_days : $forecast_data_count;
 ?>
 <div class="jet-weather__forecast"><?php
-	for ( $i = 0; $i < $forecast_days; $i ++ ) { ?>
+	for ( $i = 0; $i < $forecast_days; $i ++ ) {
+		$week_day = isset( $forecast_data[ $i ]['date'] ) ? $this->get_week_day_from_date_format( 'Y-m-d', $forecast_data[ $i ]['date'] ) : $forecast_data[ $i ]['week_day'];
+		?>
 		<div class="jet-weather__forecast-item">
-			<div class="jet-weather__forecast-day"><?php echo $forecast_data[ $i ]['week_day']; ?></div>
+			<div class="jet-weather__forecast-day"><?php echo $week_day; ?></div>
 			<div class="jet-weather__forecast-icon" title="<?php echo esc_attr( $this->get_weather_desc( $forecast_data[ $i ]['code'] ) ); ?>"><?php echo $this->get_weather_svg_icon( $forecast_data[ $i ]['code'], true ); ?></div>
 			<div class="jet-weather__forecast-max-temp"><?php echo $this->get_weather_temp( $forecast_data[ $i ]['temp_max'] ); ?></div>
 			<div class="jet-weather__forecast-min-temp"><?php echo $this->get_weather_temp( $forecast_data[ $i ]['temp_min'] ); ?></div>

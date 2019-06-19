@@ -1,6 +1,6 @@
 <?php
 /**
- * Interface Builder module
+ * DB Updater module
  *
  * Version: 1.0.0
  */
@@ -77,7 +77,8 @@ if ( ! class_exists( 'CX_DB_Updater' ) ) {
 		/**
 		 * Cherry_Db_Updater constructor.
 		 *
-		 * @since 1.0.0
+		 * @since  1.0.0
+		 * @param  array $args Module arguments.
 		 * @return void
 		 */
 		public function __construct( $args = array() ) {
@@ -200,7 +201,7 @@ if ( ! class_exists( 'CX_DB_Updater' ) ) {
 			}
 
 			if ( $this->is_updated() ) {
-				$this->show_updated_notice( $slug );
+				$this->show_updated_notice();
 			}
 		}
 
@@ -229,7 +230,7 @@ if ( ! class_exists( 'CX_DB_Updater' ) ) {
 		}
 
 		/**
-		 * Check if update was succesfully done.
+		 * Check if update was successfully done.
 		 *
 		 * @since 1.0.0
 		 * @return bool
@@ -313,12 +314,12 @@ if ( ! class_exists( 'CX_DB_Updater' ) ) {
 		private function notice_submit( $slug = '' ) {
 
 			$format = '<a href="%1s" class="button button-primary">%2$s</a>';
-			$label  = esc_html__( 'Start Update', 'cherry-framework' );
+			$label  = $this->args['labels']['start_update'];
 			$url    = add_query_arg(
 				array(
 					'cherry_x_db_update' => true,
-					'slug'             => $slug,
-					'_nonce'           => $this->create_nonce( $slug ),
+					'slug'               => $slug,
+					'_nonce'             => $this->create_nonce( $slug ),
 				),
 				esc_url( admin_url( 'index.php' ) )
 			);

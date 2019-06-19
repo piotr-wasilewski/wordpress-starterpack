@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Jet Elements For Elementor
+ * Plugin Name: JetElements For Elementor
  * Plugin URI:  http://jetelements.zemez.io/
  * Description: Brand new addon for Elementor Page builder. It provides the set of modules to create different kinds of content, adds custom modules to your website and applies attractive styles in the matter of several clicks!
- * Version:     1.15.8
+ * Version:     1.15.14
  * Author:      Zemez
  * Author URI:  https://zemez.io/wordpress/
  * Text Domain: jet-elements
@@ -62,7 +62,7 @@ if ( ! class_exists( 'Jet_Elements' ) ) {
 		 *
 		 * @var string
 		 */
-		private $version = '1.15.8';
+		private $version = '1.15.14';
 
 		/**
 		 * Framework component
@@ -100,9 +100,6 @@ if ( ! class_exists( 'Jet_Elements' ) ) {
 			// Load files.
 			add_action( 'init', array( $this, 'init' ), -999 );
 
-			// Plugin row meta
-			add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
-
 			// Register activation and deactivation hook.
 			register_activation_hook( __FILE__, array( $this, 'activation' ) );
 			register_deactivation_hook( __FILE__, array( $this, 'deactivation' ) );
@@ -139,6 +136,10 @@ if ( ! class_exists( 'Jet_Elements' ) ) {
 		 * @return void
 		 */
 		public function init() {
+			if ( ! $this->has_elementor() ) {
+				add_action( 'admin_notices', array( $this, 'required_plugins_notice' ) );
+				return;
+			}
 
 			$this->load_files();
 
@@ -163,9 +164,20 @@ if ( ! class_exists( 'Jet_Elements' ) ) {
 					'slug'    => 'jet-elements',
 				) );
 
-				if ( ! $this->has_elementor() ) {
-					$this->required_plugins_notice();
-				}
+				// Init plugin changelog
+				require $this->plugin_path( 'includes/updater/class-jet-elements-plugin-changelog.php' );
+
+				jet_elements_plugin_changelog()->init( array(
+					'name'     => 'JetElements For Elementor',
+					'slug'     => 'jet-elements',
+					'version'  => $this->get_version(),
+					'author'   => '<a href="https://zemez.io/wordpress/">Zemez</a>',
+					'homepage' => 'http://jetelements.zemez.io/',
+					'banners'  => array(
+						'high' => $this->plugin_url( 'assets/images/jet-elements.png' ),
+						'low'  => $this->plugin_url( 'assets/images/jet-elements.png' ),
+					),
+				) );
 
 				// Init DB upgrader
 				require $this->plugin_path( 'includes/class-jet-elements-db-upgrader.php' );
@@ -182,51 +194,38 @@ if ( ! class_exists( 'Jet_Elements' ) ) {
 		 * @return void
 		 */
 		public function required_plugins_notice() {
-			require $this->plugin_path( 'includes/lib/class-tgm-plugin-activation.php' );
-			add_action( 'tgmpa_register', array( $this, 'register_required_plugins' ) );
-		}
+			$screen = get_current_screen();
 
-		/**
-		 * Register required plugins
-		 *
-		 * @return void
-		 */
-		public function register_required_plugins() {
+			if ( isset( $screen->parent_file ) && 'plugins.php' === $screen->parent_file && 'update' === $screen->id ) {
+				return;
+			}
 
-			$plugins = array(
-				array(
-					'name'     => 'Elementor',
-					'slug'     => 'elementor',
-					'required' => true,
-				),
-			);
+			$plugin = 'elementor/elementor.php';
 
-			$config = array(
-				'id'           => 'jet-elements',
-				'default_path' => '',
-				'menu'         => 'tgmpa-install-plugins',
-				'parent_slug'  => 'plugins.php',
-				'capability'   => 'manage_options',
-				'has_notices'  => true,
-				'dismissable'  => true,
-				'dismiss_msg'  => '',
-				'is_automatic' => false,
-				'strings'      => array(
-					'notice_can_install_required'     => _n_noop(
-						'Jet Elements for Elementor requires the following plugin: %1$s.',
-						'Jet Elements for Elementor requires the following plugins: %1$s.',
-						'jet-elements'
-					),
-					'notice_can_install_recommended'  => _n_noop(
-						'Jet Elements for Elementor recommends the following plugin: %1$s.',
-						'Jet Elements for Elementor recommends the following plugins: %1$s.',
-						'jet-elements'
-					),
-				),
-			);
+			$installed_plugins      = get_plugins();
+			$is_elementor_installed = isset( $installed_plugins[ $plugin ] );
 
-			tgmpa( $plugins, $config );
+			if ( $is_elementor_installed ) {
+				if ( ! current_user_can( 'activate_plugins' ) ) {
+					return;
+				}
 
+				$activation_url = wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin );
+
+				$message = sprintf( '<p>%s</p>', esc_html__( 'JetElements requires Elementor to be activated.', 'jet-elements' ) );
+				$message .= sprintf( '<p><a href="%s" class="button-primary">%s</a></p>', $activation_url, esc_html__( 'Activate Elementor Now', 'jet-elements' ) );
+			} else {
+				if ( ! current_user_can( 'install_plugins' ) ) {
+					return;
+				}
+
+				$install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=elementor' ), 'install-plugin_elementor' );
+
+				$message = sprintf( '<p>%s</p>', esc_html__( 'JetElements requires Elementor to be installed.', 'jet-elements' ) );
+				$message .= sprintf( '<p><a href="%s" class="button-primary">%s</a></p>', $install_url, esc_html__( 'Install Elementor Now', 'jet-elements' ) );
+			}
+
+			printf( '<div class="notice notice-warning is-dismissible"><p>%s</p></div>', wp_kses_post( $message ) );
 		}
 
 		/**
@@ -235,12 +234,13 @@ if ( ! class_exists( 'Jet_Elements' ) ) {
 		 * @return boolean
 		 */
 		public function has_elementor() {
-			return defined( 'ELEMENTOR_VERSION' );
+			return did_action( 'elementor/loaded' );
 		}
 
 		/**
-		 * [elementor description]
-		 * @return [type] [description]
+		 * Returns Elementor instance
+		 *
+		 * @return object
 		 */
 		public function elementor() {
 			return \Elementor\Plugin::$instance;
@@ -334,25 +334,6 @@ if ( ! class_exists( 'Jet_Elements' ) ) {
 			} else {
 				return false;
 			}
-		}
-
-		/**
-		 * Add plugin changelog link.
-		 *
-		 * @param array  $plugin_meta
-		 * @param string $plugin_file
-		 *
-		 * @return array
-		 */
-		public function plugin_row_meta( $plugin_meta, $plugin_file ) {
-			if ( plugin_basename( __FILE__ ) === $plugin_file ) {
-				$plugin_meta['changelog'] = sprintf(
-					'<a href="http://documentation.zemez.io/wordpress/index.php?project=jetelements&lang=en&section=jetelements-changelog" target="_blank">%s</a>',
-					esc_html__( 'Changelog', 'jet-elements' )
-				);
-			}
-
-			return $plugin_meta;
 		}
 
 		/**

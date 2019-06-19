@@ -543,9 +543,10 @@
 
 
 			$data = "# BEGIN LBCWpFastestCache"."\n".
-					'<FilesMatch "\.(webm|ogg|mp4|ico|pdf|flv|jpg|jpeg|png|gif|webp|js|css|swf|x-html|css|xml|js|woff|woff2|ttf|svg|eot)(\.gz)?$">'."\n".
+					'<FilesMatch "\.(webm|ogg|mp4|ico|pdf|flv|jpg|jpeg|png|gif|webp|js|css|swf|x-html|css|xml|js|woff|woff2|otf|ttf|svg|eot)(\.gz)?$">'."\n".
 					'<IfModule mod_expires.c>'."\n".
 					'AddType application/font-woff2 .woff2'."\n".
+					'AddType application/x-font-opentype .otf'."\n".
 					'ExpiresActive On'."\n".
 					'ExpiresDefault A0'."\n".
 					'ExpiresByType video/webm A10368000'."\n".
@@ -563,6 +564,8 @@
 					'ExpiresByType application/javascript A10368000'."\n".
 					'ExpiresByType application/x-javascript A10368000'."\n".
 					'ExpiresByType application/font-woff2 A10368000'."\n".
+					'ExpiresByType application/x-font-opentype A10368000'."\n".
+					'ExpiresByType application/x-font-truetype A10368000'."\n".
 					'</IfModule>'."\n".
 					'<IfModule mod_headers.c>'."\n".
 					'Header set Expires "max-age=A10368000, public"'."\n".
@@ -1303,10 +1306,16 @@
 								<?php }else{ ?>
 									<div class="questionCon update-needed">
 										<div class="question">Lazy Load</div>
-										<div class="inputCon"><input type="checkbox" id="wpFastestCacheLazyLoad" name="wpFastestCacheLazyLoad"><label for="wpFastestCacheLazyLoad">Lazy Load</label></div>
+										<div class="inputCon"><input type="checkbox" id="wpFastestCacheLazyLoad" name="wpFastestCacheLazyLoad"><label for="wpFastestCacheLazyLoad">Load images and iframes when they enter the browsers viewport</label></div>
 										<div class="get-info"><a target="_blank" href="http://www.wpfastestcache.com/premium/lazy-load-reduce-http-request-and-page-load-time/"><img src="<?php echo plugins_url("wp-fastest-cache/images/info.png"); ?>" /></a></div>
 									</div>
 								<?php } ?>
+							<?php }else{ ?>
+								<div class="questionCon disabled">
+									<div class="question">Lazy Load</div>
+									<div class="inputCon"><input type="checkbox" id="wpFastestCacheLazyLoad" name="wpFastestCacheLazyLoad"><label for="wpFastestCacheLazyLoad">Load images and iframes when they enter the browsers viewport</label></div>
+									<div class="get-info"><a target="_blank" href="http://www.wpfastestcache.com/premium/lazy-load-reduce-http-request-and-page-load-time/"><img src="<?php echo plugins_url("wp-fastest-cache/images/info.png"); ?>" /></a></div>
+								</div>
 							<?php } ?>
 							
 
@@ -2083,17 +2092,29 @@
 
 				    <?php include_once(WPFC_MAIN_PATH."templates/permission_error.html"); ?>
 
+				    <?php
+				    	if(isset($this->options->wpFastestCacheStatus)){
+					    	if(isset($_SERVER["HTTP_CDN_LOOP"]) && $_SERVER["HTTP_CDN_LOOP"] && $_SERVER["HTTP_CDN_LOOP"] == "cloudflare"){
+								$cloudflare_integration_exist = false;
+					    		$cdn_values = get_option("WpFastestCacheCDN");
 
+								if($cdn_values){
+									$std_obj = json_decode($cdn_values);
+									
+									foreach($std_obj as $key => $value){
+										if($value->id == "cloudflare"){
+											$cloudflare_integration_exist = true;
+											break;
+										}
+									}
+								}
 
-
-
-
-
-
-
-
-
-
+								if(!$cloudflare_integration_exist){
+									include_once(WPFC_MAIN_PATH."templates/cloudflare_warning.html"); 
+								}
+					    	}
+				    	}
+				    ?>
 			</div>
 
 			<div class="omni_admin_sidebar">
@@ -2216,6 +2237,12 @@
 
 				<script type="text/javascript">
 					jQuery("div.questionCon.disabled").click(function(e){
+						if(e.target.tagName == "IMG"){
+							if(e.target.src.match(/info\.png/)){
+								return;
+							}
+						}
+
 						if(typeof window.wpfc.tooltip != "undefined"){
 							clearTimeout(window.wpfc.tooltip);
 						}
@@ -2269,6 +2296,14 @@
 					jQuery("#wpFastestCacheMobile").click(function(e){
 						if(jQuery("#wpFastestCacheMobileTheme").is(':checked')){
 							jQuery(this).attr('checked', true);
+						}
+					});
+
+					//if "Lazy Load" has been selected both "Mobile" and "Mobile Theme" options enabled
+					jQuery("#wpFastestCacheLazyLoad").click(function(e){
+						if(jQuery(this).is(':checked')){
+							jQuery("#wpFastestCacheMobile").attr('checked', true);
+							jQuery("#wpFastestCacheMobileTheme").attr('checked', true);
 						}
 					});
 				});

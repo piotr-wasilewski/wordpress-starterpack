@@ -3,7 +3,7 @@
 Plugin Name: WP Fastest Cache
 Plugin URI: http://wordpress.org/plugins/wp-fastest-cache/
 Description: The simplest and fastest WP Cache system
-Version: 0.8.9.2
+Version: 0.8.9.4
 Author: Emre Vona
 Author URI: http://tr.linkedin.com/in/emrevona
 Text Domain: wp-fastest-cache
@@ -758,9 +758,18 @@ GNU General Public License for more details.
 			/cache/testWpFc/
 
 			/cache/all/testWpFc/
+			
+			/cache/wpfc-widget-cache/
+			/cache/wpfc-widget-cache
+			/cache/wpfc-widget-cache/".$args["widget_id"].".html
 			*/
 			
 			if($path){
+				if($current_language = apply_filters('wpml_current_language', false)){
+					//https://wpml.org/forums/topic/wpml-language-switch-wp-fastest-cache-issue/
+					$path = preg_replace("/(\/cache\/wpfc-widget-cache\/)(.+\.html)$/", "$1/$current_language-$2", $path);
+				}
+
 				if(is_multisite()){
 					$path = preg_replace("/\/cache\/(all|wpfc-minified|wpfc-widget-cache|wpfc-mobile-cache)/", "/cache/".$_SERVER['HTTP_HOST']."/$1", $path);
 				}
@@ -998,6 +1007,11 @@ GNU General Public License for more details.
 				// to remove the cache of the pages
 				$this->rm_folder_recursively($this->getWpContentDir("/cache/all/").$path."/page");
 				$this->rm_folder_recursively($this->getWpContentDir("/cache/wpfc-mobile-cache/").$path."/page");
+			}
+
+			if($term->parent > 0){
+				$parent = get_term_by("id", $term->parent, $term->taxonomy);
+				$this->delete_cache_of_term($parent->term_taxonomy_id);
 			}
 
 
@@ -1595,6 +1609,12 @@ GNU General Public License for more details.
 						return $matches[0];
 					}
 
+					//https://i0.wp.com/i0.wp.com/wpfc.com/stories.png
+					if(preg_match("/i\d\.wp\.com/i", $matches[0])){
+						return $matches[0];
+					}
+
+
 					if(preg_match("/^\/\/random/", $cdn->cdnurl) || preg_match("/\/\/i\d\.wp\.com/", $cdn->cdnurl)){
 						if(preg_match("/^\/\/random/", $cdn->cdnurl)){
 							$cdnurl = "//i".rand(0,3).".wp.com/".str_replace("www.", "", $_SERVER["HTTP_HOST"]);
@@ -1634,8 +1654,13 @@ GNU General Public License for more details.
 					}
 
 					if(preg_match("/data-product_variations\=[\"\'][^\"\']+[\"\']/i", $matches[0])){
-						$matches[0] = preg_replace("/(quot\;)(http(s?)\:)?".preg_quote("\/\/", "/")."(www\.)?/i", "$1", $matches[0]);
-						$matches[0] = preg_replace("/".preg_quote($cdn->originurl, "/")."/i", $cdnurl, $matches[0]);
+						$cdn->originurl = preg_quote($cdn->originurl, "/");
+						$cdn->originurl = str_replace("\/", "\\\\\/", $cdn->originurl);
+						
+						if(preg_match("/".$cdn->originurl."/", $matches[0])){
+							$matches[0] = preg_replace("/(quot\;)(http(s?)\:)?".preg_quote("\/\/", "/")."(www\.)?/i", "$1", $matches[0]);
+							$matches[0] = preg_replace("/".$cdn->originurl."/i", $cdnurl, $matches[0]);
+						}
 					}else if(preg_match("/\{\"concatemoji\"\:\"[^\"]+\"\}/i", $matches[0])){
 						$matches[0] = preg_replace("/(http(s?)\:)?".preg_quote("\/\/", "/")."(www\.)?/i", "", $matches[0]);
 						$matches[0] = preg_replace("/".preg_quote($cdn->originurl, "/")."/i", $cdnurl, $matches[0]);
@@ -1668,7 +1693,12 @@ GNU General Public License for more details.
 		public function read_file($url){
 			if(!preg_match("/\.php/", $url)){
 				$url = preg_replace("/\?.*/", "", $url);
-				$path = preg_replace("/.+\/wp-content\/(.+)/", WPFC_WP_CONTENT_DIR."/"."$1", $url);
+
+				if(preg_match("/wp-content/", $url)){
+					$path = preg_replace("/.+\/wp-content\/(.+)/", WPFC_WP_CONTENT_DIR."/"."$1", $url);
+				}else if(preg_match("/wp-includes/", $url)){
+					$path = preg_replace("/.+\/wp-includes\/(.+)/", ABSPATH."wp-includes/"."$1", $url);
+				}
 
 				if(@file_exists($path)){
 					$filesize = filesize($path);

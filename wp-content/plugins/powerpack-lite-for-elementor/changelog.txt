@@ -1,3 +1,11 @@
+== 1.2.3 ==
+Release date: June 14, 2019
+* Added: 4 new layouts to Counter widget
+
+== 1.2.2 ==
+Release date: May 23, 2019
+* Added: Twitter widgets
+
 == 1.2.1 ==
 Release date: April 2, 2019
 * Added: Buttons widget

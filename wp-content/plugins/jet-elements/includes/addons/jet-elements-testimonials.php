@@ -57,6 +57,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'name'       => '.jet-testimonials__name',
 				'position'   => '.jet-testimonials__position',
 				'date'       => '.jet-testimonials__date',
+				'rating'     => '.jet-testimonials__rating',
 				'arrow'      => '.jet-testimonials__instance .jet-arrow',
 				'dots'       => '.jet-testimonials__instance .jet-slick-dots',
 			)
@@ -300,6 +301,23 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'label'   => esc_html__( 'Date', 'jet-elements' ),
 				'type'    => Controls_Manager::TEXT,
 				'dynamic' => array( 'active' => true ),
+			)
+		);
+
+		$repeater->add_control(
+			'item_rating',
+			array(
+				'label'   => esc_html__( 'Rating', 'jet-elements' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 0,
+				'options' => array(
+					'0' => esc_html__( 'Hidden', 'jet-elements' ),
+					'1' => 1,
+					'2' => 2,
+					'3' => 3,
+					'4' => 4,
+					'5' => 5,
+				),
 			)
 		);
 
@@ -2200,6 +2218,139 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 		$this->end_controls_section();
 
 		/**
+		 * Rating Style Section
+		 */
+		$this->start_controls_section(
+			'section_rating_style',
+			array(
+				'label'      => esc_html__( 'Rating', 'jet-elements' ),
+				'tab'        => Controls_Manager::TAB_STYLE,
+				'show_label' => false,
+			)
+		);
+
+		$this->add_control(
+			'star_color',
+			array(
+				'label'  => esc_html__( 'Stars', 'jet-elements' ),
+				'type'   => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['rating'] . ' i' => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'rating_star_style',
+			array(
+				'label' => esc_html__( 'Stars Style', 'jet-elements' ),
+				'type'  => Controls_Manager::CHOOSE,
+				'label_block' => false,
+				'options' => array(
+					'solid' => array(
+						'title' => esc_html__( 'Solid', 'jet-elements' ),
+						'icon'  => 'fa fa-star',
+					),
+					'outline' => array(
+						'title' => esc_html__( 'Outline', 'jet-elements' ),
+						'icon'  => 'fa fa-star-o',
+					),
+				),
+				'default' => 'solid',
+			)
+		);
+
+		$this->add_control(
+			'rating_active_star_color',
+			array(
+				'label'  => esc_html__( 'Active Stars', 'jet-elements' ),
+				'type'   => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['rating'] => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'rating_active_star_style',
+			array(
+				'label' => esc_html__( 'Active Stars Style', 'jet-elements' ),
+				'type'  => Controls_Manager::CHOOSE,
+				'label_block' => false,
+				'options' => array(
+					'solid' => array(
+						'title' => esc_html__( 'Solid', 'jet-elements' ),
+						'icon'  => 'fa fa-star',
+					),
+					'outline' => array(
+						'title' => esc_html__( 'Outline', 'jet-elements' ),
+						'icon'  => 'fa fa-star-o',
+					),
+				),
+				'default' => 'solid',
+			)
+		);
+
+		$this->add_responsive_control(
+			'rating_icon_size',
+			array(
+				'label' => esc_html__( 'Size', 'jet-elements' ),
+				'type'  => Controls_Manager::SLIDER,
+				'default' => array(
+					'unit' => 'px',
+					'size' => '20',
+				),
+				'render_type' => 'template',
+				'range' => array(
+					'px' => array(
+						'min' => 0,
+						'max' => 100,
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['rating'] => 'font-size: {{SIZE}}{{UNIT}}',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'rating_icon_space',
+			array(
+				'label' => esc_html__( 'Spacing', 'jet-elements' ),
+				'type'  => Controls_Manager::SLIDER,
+				'default' => array(
+					'unit' => 'px',
+					'size' => '7',
+				),
+				'range' => array(
+					'px' => array(
+						'min' => 0,
+						'max' => 50,
+					),
+				),
+				'selectors' => array(
+					'body:not(.rtl) {{WRAPPER}} i:not(:last-of-type)' => 'margin-right: {{SIZE}}{{UNIT}}',
+					'body.rtl {{WRAPPER}} i:not(:last-of-type)' => 'margin-left: {{SIZE}}{{UNIT}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'rating_star_margin',
+			array(
+				'label'       => esc_html__( 'Margin', 'jet-elements' ),
+				'type'        => Controls_Manager::DIMENSIONS,
+				'size_units'  => array( 'px' ),
+				'render_type' => 'template',
+				'selectors'   => array(
+					'{{WRAPPER}} ' . $css_scheme['rating'] => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+
+		/**
 		 * Order Style Section
 		 */
 		$this->start_controls_section(
@@ -2218,7 +2369,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 1,
 				'min'     => 1,
-				'max'     => 7,
+				'max'     => 8,
 				'step'    => 1,
 				'selectors' => array(
 					'{{WRAPPER}} '. $css_scheme['image'] => 'order: {{VALUE}};',
@@ -2233,7 +2384,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 2,
 				'min'     => 1,
-				'max'     => 7,
+				'max'     => 8,
 				'step'    => 1,
 				'selectors' => array(
 					'{{WRAPPER}} '. $css_scheme['icon'] => 'order: {{VALUE}};',
@@ -2248,7 +2399,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 3,
 				'min'     => 1,
-				'max'     => 7,
+				'max'     => 8,
 				'step'    => 1,
 				'selectors' => array(
 					'{{WRAPPER}} '. $css_scheme['title'] => 'order: {{VALUE}};',
@@ -2263,7 +2414,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 4,
 				'min'     => 1,
-				'max'     => 7,
+				'max'     => 8,
 				'step'    => 1,
 				'selectors' => array(
 					'{{WRAPPER}} '. $css_scheme['comment'] => 'order: {{VALUE}};',
@@ -2278,7 +2429,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 5,
 				'min'     => 1,
-				'max'     => 7,
+				'max'     => 8,
 				'step'    => 1,
 				'selectors' => array(
 					'{{WRAPPER}} '. $css_scheme['name'] => 'order: {{VALUE}};',
@@ -2293,7 +2444,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 6,
 				'min'     => 1,
-				'max'     => 7,
+				'max'     => 8,
 				'step'    => 1,
 				'selectors' => array(
 					'{{WRAPPER}} '. $css_scheme['position'] => 'order: {{VALUE}};',
@@ -2308,10 +2459,25 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 7,
 				'min'     => 1,
-				'max'     => 7,
+				'max'     => 8,
 				'step'    => 1,
 				'selectors' => array(
 					'{{WRAPPER}} '. $css_scheme['date'] => 'order: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'rating_order',
+			array(
+				'label'   => esc_html__( 'Rating Order', 'jet-elements' ),
+				'type'    => Controls_Manager::NUMBER,
+				'default' => 8,
+				'min'     => 1,
+				'max'     => 8,
+				'step'    => 1,
+				'selectors' => array(
+					'{{WRAPPER}} '. $css_scheme['rating'] => 'order: {{VALUE}};',
 				),
 			)
 		);
@@ -2344,6 +2510,19 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 		$this->__open_wrap();
 		include $this->__get_global_template( 'index' );
 		$this->__close_wrap();
+	}
+
+	protected function render_stars() {
+
+		$settings = $this->get_settings();
+		$stars_html = '';
+
+		for ( $stars = 1; $stars <= 5; $stars++ ) {
+			$star_style = ( "outline" === $settings['rating_star_style'] ) ? 'f006' : 'f005' ;
+			$active_star_style = ( "outline" === $settings['rating_active_star_style'] ) ? 'f006' : 'f005' ;
+			$stars_html .= '<i class="fa" aria-hidden="true" data-star-style="&#x' . $star_style .'" data-active-star-style="&#x' . $active_star_style .'"></i>';
+		}
+		return $stars_html;
 	}
 
 	/**
@@ -2385,5 +2564,18 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 		$instance_settings = json_encode( $instance_settings );
 
 		return sprintf( 'data-settings=\'%1$s\'', $instance_settings );
+	}
+	
+	public function __get_testimonials_image() {
+		$image_item = $this->__processed_item['item_image'];
+		
+		if ( empty( $image_item['url'] ) ) {
+			return;
+		}
+		
+		return sprintf( '<figure class="jet-testimonials__figure"><img class="jet-testimonials__tag-img" src="%1$s" alt="%2$s"></figure>',
+			$image_item['url'],
+			esc_attr( Control_Media::get_image_alt( $image_item ) )
+		);
 	}
 }

@@ -692,8 +692,14 @@
 				$( '.jet-slider-loader', $target ).css( { 'display': 'none' } );
 			} );
 
-			var tabletHeight = '' !== settings['sliderHeightTablet']['size'] ? settings['sliderHeightTablet']['size'] + settings['sliderHeightTablet']['unit'] : settings['sliderHeight']['size'] + settings['sliderHeight']['unit'];
-			var mobileHeight = '' !== settings['sliderHeightMobile']['size'] ? settings['sliderHeightMobile']['size'] + settings['sliderHeightMobile']['unit'] : tabletHeight;
+			var tabletHeight = '' !== settings['sliderHeightTablet']['size'] ? settings['sliderHeightTablet']['size'] + settings['sliderHeightTablet']['unit'] : settings['sliderHeight']['size'] + settings['sliderHeight']['unit'],
+				mobileHeight = '' !== settings['sliderHeightMobile']['size'] ? settings['sliderHeightMobile']['size'] + settings['sliderHeightMobile']['unit'] : tabletHeight,
+
+				tabletThumbWidth = '' !== settings['thumbnailWidthTablet'] ? settings['thumbnailWidthTablet'] : settings['thumbnailWidth'],
+				mobileThumbWidth = '' !== settings['thumbnailWidthMobile'] ? settings['thumbnailWidthMobile'] : tabletThumbWidth,
+
+				tabletThumbHeight = '' !== settings['thumbnailHeightTablet'] ? settings['thumbnailHeightTablet'] : settings['thumbnailHeight'],
+				mobileThumbHeight = '' !== settings['thumbnailHeightMobile'] ? settings['thumbnailHeightMobile'] : tabletThumbWidth;
 
 			// Breakpoint Settings Start
 			var tabletBreakpoint = ( undefined !== elementor.config.breakpoints.lg ) ? elementor.config.breakpoints.lg - 1 : 1023,
@@ -705,11 +711,15 @@
 			}
 
 			breakpointsSettings[tabletBreakpoint] = {
-				height: tabletHeight
+				height: tabletHeight,
+				thumbnailWidth: tabletThumbWidth,
+				thumbnailHeight: tabletThumbHeight
 			};
 
 			breakpointsSettings[mobileBreakpoint] = {
-				height: mobileHeight
+				height: mobileHeight,
+				thumbnailWidth: mobileThumbWidth,
+				thumbnailHeight: mobileThumbHeight
 			};
 			// Breakpoint Settings End
 
@@ -1934,11 +1944,10 @@
 					sectionInvert = 'yes' === $this.data('invert') ? true : false,
 					$section      = $( '#' + sectionId );
 
-				$section.addClass( 'jet-scroll-navigation-section' );
-				//$section.attr( 'touch-action', 'none' );
-				$section[0].dataset.sectionName = sectionId;
-
 				if ( $section[0] ) {
+					$section.addClass( 'jet-scroll-navigation-section' );
+					//$section.attr( 'touch-action', 'none' );
+					$section[0].dataset.sectionName = sectionId;
 					sections[ sectionId ] = {
 						selector: $section,
 						offset: Math.round( $section.offset().top ),
@@ -2086,7 +2095,7 @@
 							$section  = $target.closest( '.elementor-top-section' ),
 							sectionId = $section.attr( 'id' ) || false;
 
-						touchStartY = event.changedTouches[0].screenY;
+						touchStartY = event.changedTouches[0].clientY; // clientY instead of screenY, screenY is implemented differently in iOS, making it useless for thresholding
 
 						if ( sectionId && isScrolling ) {
 							event.preventDefault();
@@ -2100,12 +2109,17 @@
 							$section        = $target.closest( '.elementor-top-section' ) || false,
 							sectionId       = $section.attr( 'id' ) || false,
 							endScrollTop    = $window.scrollTop(),
-							touchEndY       = event.changedTouches[0].screenY,
+							touchEndY       = event.changedTouches[0].clientY,
 							direction       = touchEndY > touchStartY ? 'up' : 'down',
 							sectionOffset   = false,
 							newSectionId    = false,
 							prevSectionId   = false,
-							nextSectionId   = false;
+							nextSectionId   = false,
+							swipeYthreshold = (window.screen.availHeight / 8); // defining pageswitch threshold at 1/8 of screenheight
+
+						if ( Math.abs( touchEndY - touchStartY ) < 20 ) {
+							return false;
+						}
 
 						if ( $navigation[0] ) {
 							return false;
@@ -2120,7 +2134,7 @@
 
 							if ( 'up' === direction ) {
 
-								if ( sectionOffset < endScrollTop ) {
+								if ( sectionOffset - swipeYthreshold < endScrollTop ) { //threshold used here
 									prevSectionId = sectionId;
 								}
 
@@ -2131,7 +2145,7 @@
 
 							if ( 'down' === direction ) {
 
-								if ( sectionOffset > endScrollTop ) {
+								if ( sectionOffset + swipeYthreshold > endScrollTop ) { //threshold used here
 									nextSectionId = sectionId;
 								}
 

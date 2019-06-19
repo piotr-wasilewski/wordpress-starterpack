@@ -88,8 +88,11 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'meta'          => '.jet-posts .post-meta',
 				'meta-item'     => '.jet-posts .post-meta__item',
 				'excerpt'       => '.jet-posts .entry-excerpt',
+				'button_wrap'   => '.jet-posts .jet-more-wrap',
 				'button'        => '.jet-posts .jet-more',
 				'button_icon'   => '.jet-posts .jet-more-icon',
+				'terms'         => '.jet-posts .jet-posts__terms',
+				'terms_link'    => '.jet-posts .jet-posts__terms-link',
 			)
 		);
 
@@ -115,14 +118,12 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 		$this->add_responsive_control(
 			'slides_min_height',
 			array(
-				'label'       => esc_html__( 'Slides Minimal Height', 'jet-elements' ),
-				'label_block' => true,
-				'type'        => Controls_Manager::NUMBER,
-				'default'     => '',
-				'selectors'   => array(
+				'label'     => esc_html__( 'Slides Minimal Height', 'jet-elements' ),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => '',
+				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['inner-box'] => 'min-height: {{VALUE}}px;',
 				),
-
 			)
 		);
 
@@ -286,7 +287,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 			)
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'column_padding',
 			array(
 				'label'       => esc_html__( 'Column Padding', 'jet-elements' ),
@@ -508,6 +509,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['title'] . ' a' => 'color: {{VALUE}}',
 				),
+				'separator' => 'after',
 			)
 		);
 
@@ -532,6 +534,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['title'] . ' a:hover' => 'color: {{VALUE}}',
 				),
+				'separator' => 'after',
 			)
 		);
 
@@ -1458,6 +1461,240 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 			)
 		);
 
+		$this->add_control(
+			'button_v_alignment',
+			array(
+				'label'   => esc_html__( 'Vertical Alignment', 'jet-elements' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'top',
+				'options' => array(
+					'top'    => esc_html__( 'Top', 'jet-elements' ),
+					'bottom' => esc_html__( 'Bottom', 'jet-elements' ),
+				),
+				'selectors_dictionary' => array(
+					'top'    => '',
+					'bottom' => 'margin-top: auto',
+				),
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['button_wrap'] => '{{VALUE}}'
+				),
+				'condition' => array(
+					'equal_height_cols' => 'true',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'section_terms_link_style',
+			array(
+				'label'     => esc_html__( 'Terms Links', 'jet-elements' ),
+				'tab'       => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'show_terms' => 'yes',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'terms_link_typography',
+				'scheme'   => Scheme_Typography::TYPOGRAPHY_4,
+				'selector' => '{{WRAPPER}}  ' . $css_scheme['terms_link'],
+			)
+		);
+
+		$this->start_controls_tabs( 'tabs_terms_link_style' );
+
+		$this->start_controls_tab(
+			'tab_terms_link_normal',
+			array(
+				'label' => esc_html__( 'Normal', 'jet-elements' ),
+			)
+		);
+
+		$this->add_control(
+			'terms_link_bg_color',
+			array(
+				'label'     => esc_html__( 'Background Color', 'jet-elements' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '',
+				'scheme'    => array(
+					'type'  => Scheme_Color::get_type(),
+					'value' => Scheme_Color::COLOR_1,
+				),
+				'title'     => esc_html__( 'Background Color', 'jet-elements' ),
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['terms_link'] => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'terms_link_color',
+			array(
+				'label' => esc_html__( 'Text Color', 'jet-elements' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['terms_link'] => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'tab_terms_link_hover',
+			array(
+				'label' => esc_html__( 'Hover', 'jet-elements' ),
+			)
+		);
+
+		$this->add_control(
+			'terms_link_hover_bg_color',
+			array(
+				'label'     => esc_html__( 'Background Color', 'jet-elements' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '',
+				'scheme'    => array(
+					'type'  => Scheme_Color::get_type(),
+					'value' => Scheme_Color::COLOR_1,
+				),
+				'title'     => esc_html__( 'Background Color', 'jet-elements' ),
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['terms_link'] . ':hover' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'terms_link_hover_color',
+			array(
+				'label' => esc_html__( 'Text Color', 'jet-elements' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['terms_link'] . ':hover' => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'terms_link_border_hover_color',
+			array(
+				'label' => esc_html__( 'Border Color', 'jet-elements' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['terms_link'] . ':hover' => 'border-color: {{VALUE}}',
+				),
+				'condition' => array(
+					'terms_link_border_border!' => '',
+				),
+			)
+		);
+
+		$this->add_control(
+			'terms_link_hover_text_decor',
+			array(
+				'label'   => esc_html__( 'Text Decoration', 'jet-elements' ),
+				'type'    => Controls_Manager::SELECT,
+				'options' => array(
+					'none'      => esc_html__( 'None', 'jet-elements' ),
+					'underline' => esc_html__( 'Underline', 'jet-elements' ),
+				),
+				'default' => 'none',
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['terms_link'] . ':hover' => 'text-decoration: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->add_responsive_control(
+			'terms_link_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['terms_link'] => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'separator' => 'before',
+			)
+		);
+
+		$this->add_responsive_control(
+			'terms_link_margin',
+			array(
+				'label'      => esc_html__( 'Margin', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['terms'] => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'        => 'terms_link_border',
+				'label'       => esc_html__( 'Border', 'jet-elements' ),
+				'placeholder' => '1px',
+				'default'     => '1px',
+				'selector'    => '{{WRAPPER}} ' . $css_scheme['terms_link'],
+			)
+		);
+
+		$this->add_responsive_control(
+			'terms_link_border_radius',
+			array(
+				'label'      => esc_html__( 'Border Radius', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['terms_link'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			array(
+				'name'     => 'terms_link_box_shadow',
+				'selector' => '{{WRAPPER}} ' . $css_scheme['terms_link'],
+			)
+		);
+
+		$this->add_responsive_control(
+			'terms_link_alignment',
+			array(
+				'label'   => esc_html__( 'Alignment', 'jet-elements' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'options' => array(
+					'left' => array(
+						'title' => esc_html__( 'Left', 'jet-elements' ),
+						'icon'  => 'fa fa-align-left',
+					),
+					'center' => array(
+						'title' => esc_html__( 'Center', 'jet-elements' ),
+						'icon'  => 'fa fa-align-center',
+					),
+					'right' => array(
+						'title' => esc_html__( 'Right', 'jet-elements' ),
+						'icon'  => 'fa fa-align-right',
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['terms'] => 'text-align: {{VALUE}};',
+				),
+			)
+		);
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -2054,7 +2291,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 			'nextArrow'      => jet_elements_tools()->get_carousel_arrow(
 				array( $settings['next_arrow'], 'next-arrow' )
 			),
-			'rtl' => $is_rtl,
+			'rtl'            => $is_rtl,
 		);
 
 		if ( 1 === absint( $settings['columns'] ) ) {
@@ -2113,10 +2350,12 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 	protected function _content_template() {}
 
 	/**
-	 * Add meta controls for selected poition
+	 * Add meta controls for selected position
 	 *
-	 * @param  [type] $position [description]
-	 * @return [type]           [description]
+	 * @param string $position_slug
+	 * @param string $position_name
+	 *
+	 * @return void
 	 */
 	public function add_meta_controls( $position_slug, $position_name ) {
 
@@ -2216,10 +2455,13 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 	}
 
 	/**
-	 * Add meta controls for selected poition
+	 * Add meta controls for selected position
 	 *
-	 * @param  [type] $position [description]
-	 * @return [type]           [description]
+	 * @param string $position_slug
+	 * @param string $position_name
+	 * @param string $base
+	 *
+	 * @return void
 	 */
 	public function add_meta_style_controls( $position_slug, $position_name, $base ) {
 
@@ -2275,7 +2517,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 		$this->add_control(
 			$position_slug . '_meta_label_display',
 			array(
-				'label'   => esc_html__( 'Dispaly Meta Label and Value', 'jet-elements' ),
+				'label'   => esc_html__( 'Display Meta Label and Value', 'jet-elements' ),
 				'type'    => Controls_Manager::SELECT,
 				'default' => '',
 				'options' => array(
@@ -2365,6 +2607,35 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
 					'{{WRAPPER}} .' . $base => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			$position_slug . '_meta_align',
+			array(
+				'label'   => esc_html__( 'Alignment', 'jet-elements' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'options' => array(
+					'left' => array(
+						'title' => esc_html__( 'Left', 'jet-elements' ),
+						'icon'  => 'fa fa-align-left',
+					),
+					'center' => array(
+						'title' => esc_html__( 'Center', 'jet-elements' ),
+						'icon'  => 'fa fa-align-center',
+					),
+					'right' => array(
+						'title' => esc_html__( 'Right', 'jet-elements' ),
+						'icon'  => 'fa fa-align-right',
+					),
+					'justify' => array(
+						'title' => esc_html__( 'Justified', 'jet-elements' ),
+						'icon'  => 'fa fa-align-justify',
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .' . $base => 'text-align: {{VALUE}};',
 				),
 			)
 		);

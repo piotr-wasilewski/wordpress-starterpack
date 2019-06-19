@@ -24,11 +24,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.elementor-panel [class^="jetelements-icon-"]:before,
-.elementor-panel [class*=" jetelements-icon-"]:before {
+[class^="jetelements-icon-"]:before,
+[class*=" jetelements-icon-"]:before {
   display: block;
   font-size: 48px;
   line-height: 28px;
+}
+
+.elementor-navigator__element-widget [class*="jetelements-icon-"]:before {
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .jetelements-icon-1:before {

@@ -269,19 +269,25 @@ class Jet_Elements_Animated_Box extends Jet_Elements_Base {
 		$this->add_responsive_control(
 			'box_height',
 			array(
-				'label' => esc_html__( 'Height', 'jet-elements' ),
-				'type'  => Controls_Manager::SLIDER,
+				'label'      => esc_html__( 'Height', 'jet-elements' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', 'rem', 'vh' ),
 				'range' => array(
 					'px' => array(
 						'min' => 100,
 						'max' => 1000,
 					),
+					'rem' => array(
+						'min' => 1,
+						'max' => 50,
+					),
 				),
-				'default' => [
+				'default' => array(
 					'size' => 245,
-				],
+					'unit' => 'px',
+				),
 				'selectors' => array(
-					'{{WRAPPER}} '.$css_scheme['animated_box'] => 'height: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} ' . $css_scheme['animated_box'] => 'height: {{SIZE}}{{UNIT}};',
 				),
 			)
 		);

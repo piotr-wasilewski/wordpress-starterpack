@@ -18,6 +18,14 @@ if ( isset( $settings['fixed'] ) && filter_var( $settings['fixed'], FILTER_VALID
 	if ( isset( $settings['fixed_position'] ) && $settings['fixed_position'] ) {
 		$this->add_render_attribute( 'wrapper', 'class', sprintf( 'jet-dropbar-fixed--%s-position', esc_attr( $settings['fixed_position'] ) ) );
 	}
+
+	if ( isset( $settings['fixed_position_tablet'] ) && $settings['fixed_position_tablet'] ) {
+		$this->add_render_attribute( 'wrapper', 'class', sprintf( 'jet-dropbar-fixed--%s-tablet-position', esc_attr( $settings['fixed_position_tablet'] ) ) );
+	}
+
+	if ( isset( $settings['fixed_position_mobile'] ) && $settings['fixed_position_mobile'] ) {
+		$this->add_render_attribute( 'wrapper', 'class', sprintf( 'jet-dropbar-fixed--%s-mobile-position', esc_attr( $settings['fixed_position_mobile'] ) ) );
+	}
 }
 ?>
 

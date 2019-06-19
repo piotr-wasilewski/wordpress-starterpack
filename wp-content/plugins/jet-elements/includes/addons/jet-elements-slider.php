@@ -94,30 +94,52 @@ class Jet_Elements_Slider extends Jet_Elements_Base {
 		);
 
 		$repeater->add_control(
+			'item_content_type',
+			array(
+				'label'   => esc_html__( 'Content Type', 'jet-elements' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'default',
+				'options' => array(
+					'default'  => esc_html__( 'Default', 'jet-elements' ),
+					'template' => esc_html__( 'Template', 'jet-elements' ),
+				),
+			)
+		);
+
+		$repeater->add_control(
 			'item_icon',
 			array(
 				'label'       => esc_html__( 'Icon', 'jet-elements' ),
 				'type'        => Controls_Manager::ICON,
 				'label_block' => true,
 				'file'        => '',
+				'condition'   => array(
+					'item_content_type' => 'default',
+				),
 			)
 		);
 
 		$repeater->add_control(
 			'item_title',
 			array(
-				'label'   => esc_html__( 'Title', 'jet-elements' ),
-				'type'    => Controls_Manager::TEXT,
-				'dynamic' => array( 'active' => true ),
+				'label'     => esc_html__( 'Title', 'jet-elements' ),
+				'type'      => Controls_Manager::TEXT,
+				'dynamic'   => array( 'active' => true ),
+				'condition' => array(
+					'item_content_type' => 'default',
+				),
 			)
 		);
 
 		$repeater->add_control(
 			'item_subtitle',
 			array(
-				'label'   => esc_html__( 'Subtitle', 'jet-elements' ),
-				'type'    => Controls_Manager::TEXT,
-				'dynamic' => array( 'active' => true ),
+				'label'     => esc_html__( 'Subtitle', 'jet-elements' ),
+				'type'      => Controls_Manager::TEXT,
+				'dynamic'   => array( 'active' => true ),
+				'condition' => array(
+					'item_content_type' => 'default',
+				),
 			)
 		);
 
@@ -125,9 +147,12 @@ class Jet_Elements_Slider extends Jet_Elements_Base {
 		$repeater->add_control(
 			'item_desc',
 			array(
-				'label'   => esc_html__( 'Description', 'jet-elements' ),
-				'type'    => Controls_Manager::TEXTAREA,
-				'dynamic' => array( 'active' => true ),
+				'label'     => esc_html__( 'Description', 'jet-elements' ),
+				'type'      => Controls_Manager::TEXTAREA,
+				'dynamic'   => array( 'active' => true ),
+				'condition' => array(
+					'item_content_type' => 'default',
+				),
 			)
 		);
 
@@ -144,15 +169,47 @@ class Jet_Elements_Slider extends Jet_Elements_Base {
 						TagsModule::URL_CATEGORY,
 					),
 				),
+				'condition' => array(
+					'item_content_type' => 'default',
+				),
+			)
+		);
+		
+		$repeater->add_control(
+			'item_button_primary_target',
+			array(
+				'label'        => esc_html__( 'Open link in new window', 'jet-elements' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'return_value' => '_blank',
+				'condition'    => array(
+					'item_content_type'        => 'default',
+					'item_button_primary_url!' => '',
+				),
+			)
+		);
+		
+		$repeater->add_control(
+			'item_button_primary_rel',
+			array(
+				'label'        => esc_html__( 'Add nofollow', 'jet-elements' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'return_value' => 'nofollow',
+				'condition'    => array(
+					'item_content_type'        => 'default',
+					'item_button_primary_url!' => '',
+				),
 			)
 		);
 
 		$repeater->add_control(
 			'item_button_primary_text',
 			array(
-				'label'   => esc_html__( 'Primary Button Text', 'jet-elements' ),
-				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'More', 'jet-elements' ),
+				'label'     => esc_html__( 'Primary Button Text', 'jet-elements' ),
+				'type'      => Controls_Manager::TEXT,
+				'default'   => esc_html__( 'More', 'jet-elements' ),
+				'condition' => array(
+					'item_content_type' => 'default',
+				),
 			)
 		);
 
@@ -169,15 +226,61 @@ class Jet_Elements_Slider extends Jet_Elements_Base {
 						TagsModule::URL_CATEGORY,
 					),
 				),
+				'condition' => array(
+					'item_content_type' => 'default',
+				),
+			)
+		);
+		
+		$repeater->add_control(
+			'item_button_secondary_target',
+			array(
+				'label'        => esc_html__( 'Open link in new window', 'jet-elements' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'return_value' => '_blank',
+				'condition'    => array(
+					'item_content_type'          => 'default',
+					'item_button_secondary_url!' => '',
+				),
+			)
+		);
+		
+		$repeater->add_control(
+			'item_button_secondary_rel',
+			array(
+				'label'        => esc_html__( 'Add nofollow', 'jet-elements' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'return_value' => 'nofollow',
+				'condition'    => array(
+					'item_content_type'          => 'default',
+					'item_button_secondary_url!' => '',
+				),
 			)
 		);
 
 		$repeater->add_control(
 			'item_button_secondary_text',
 			array(
-				'label'   => esc_html__( 'Secondary Button Text', 'jet-elements' ),
-				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'More', 'jet-elements' ),
+				'label'     => esc_html__( 'Secondary Button Text', 'jet-elements' ),
+				'type'      => Controls_Manager::TEXT,
+				'default'   => esc_html__( 'More', 'jet-elements' ),
+				'condition' => array(
+					'item_content_type' => 'default',
+				),
+			)
+		);
+
+		$repeater->add_control(
+			'template_id',
+			array(
+				'label'       => esc_html__( 'Choose Template', 'jet-elements' ),
+				'label_block' => 'true',
+				'type'        => Controls_Manager::SELECT,
+				'default'     => '0',
+				'options'     => jet_elements_tools()->get_elementor_templates_options(),
+				'condition'   => array(
+					'item_content_type' => 'template',
+				),
 			)
 		);
 
@@ -416,14 +519,14 @@ class Jet_Elements_Slider extends Jet_Elements_Base {
 			)
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'thumbnail_width',
 			array(
 				'label'   => esc_html__( 'Thumbnail width(px)', 'jet-elements' ),
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 120,
 				'min'     => 20,
-				'max'     => 200,
+				'max'     => 500,
 				'step'    => 1,
 				'condition' => array(
 					'thumbnails' => 'true',
@@ -431,7 +534,7 @@ class Jet_Elements_Slider extends Jet_Elements_Base {
 			)
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'thumbnail_height',
 			array(
 				'label'   => esc_html__( 'Thumbnail height(px)', 'jet-elements' ),
@@ -2483,7 +2586,11 @@ class Jet_Elements_Slider extends Jet_Elements_Base {
 			'imageScaleMode'        => $module_settings['slide_image_scale_mode'],
 			'thumbnails'            => filter_var( $module_settings['thumbnails'], FILTER_VALIDATE_BOOLEAN ),
 			'thumbnailWidth'        => $module_settings['thumbnail_width'],
+			'thumbnailWidthTablet'  => $module_settings['thumbnail_width_tablet'],
+			'thumbnailWidthMobile'  => $module_settings['thumbnail_width_mobile'],
 			'thumbnailHeight'       => $module_settings['thumbnail_height'],
+			'thumbnailHeightTablet' => $module_settings['thumbnail_height_tablet'],
+			'thumbnailHeightMobile' => $module_settings['thumbnail_height_mobile'],
 			'rightToLeft'           => is_rtl(),
 		);
 
@@ -2522,25 +2629,70 @@ class Jet_Elements_Slider extends Jet_Elements_Base {
 	 * [__loop_item_image_tag description]
 	 * @return [type] [description]
 	 */
-	protected function __loop_item_image_tag( ) {
+	protected function __loop_item_image_tag() {
 		$item = $this->__processed_item;
 		$image = $item['item_image'];
 
 		if ( empty( $image['id'] ) ) {
 			return sprintf( '<img class="sp-image" src="%s" alt="">', Utils::get_placeholder_image_src() );
 		}
-
+		
 		$image_sizes = get_intermediate_image_sizes();
-
 		$slider_image_size = $this->get_settings_for_display( 'slider_image_size' );
-
 		$slider_image_size = ! empty( $slider_image_size ) ? $slider_image_size : 'full';
-
 		$image_attr = array(
 			'class' => 'sp-image',
 		);
-
+		
 		return wp_get_attachment_image( $image['id'], $slider_image_size, false, $image_attr );
+	}
+	
+	protected function __loop_item_image_thumb() {
+		$item = $this->__processed_item;
+		$image = $item['item_image'];
+		
+		if ( empty( $image['id'] ) ) {
+			return sprintf( '<img class="sp-thumbnail" src="%s" alt="">', Utils::get_placeholder_image_src() );
+		}
+		
+		$alt = esc_attr( Control_Media::get_image_alt( $image ) );
+		
+		return sprintf( '<img class="sp-thumbnail" src="%1$s" alt="%2$s">', $image['url'], $alt );
+	}
+
+	/**
+	 * Get item template content.
+	 *
+	 * @return string|void
+	 */
+	protected function __loop_item_template_content() {
+
+		$template_id = $this->__processed_item['template_id'];
+
+		if ( '0' === $template_id ) {
+			return;
+		}
+
+		$content = jet_elements()->elementor()->frontend->get_builder_content_for_display( $template_id );
+
+		if ( jet_elements()->elementor()->editor->is_edit_mode() ) {
+			$edit_url = add_query_arg(
+				array(
+					'elementor' => '',
+				),
+				get_permalink( $template_id )
+			);
+
+			$edit_link = sprintf(
+				'<a class="jet-elements-edit-template-link" href="%s" title="%s" target="_blank"><i class="fa fa-pencil"></i></a>',
+				esc_url( $edit_url ),
+				esc_html__( 'Edit Template', 'jet-elements' )
+			);
+
+			$content .= $edit_link;
+		}
+
+		return $content;
 	}
 
 	/**

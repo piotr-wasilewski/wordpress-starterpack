@@ -80,7 +80,7 @@ if ( ! class_exists( 'Jet_Elements_Compatibility' ) ) {
 		}
 
 		/**
-		 * Add jet elements translation nodes
+		 * Add jet-elements translation nodes
 		 *
 		 * @param array $nodes_to_translate
 		 *

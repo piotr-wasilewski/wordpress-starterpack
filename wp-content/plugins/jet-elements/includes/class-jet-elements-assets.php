@@ -31,19 +31,18 @@ if ( ! class_exists( 'Jet_Elements_Assets' ) ) {
 		 * Constructor for the class
 		 */
 		public function init() {
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-
+			add_action( 'wp_enqueue_scripts',    array( $this, 'enqueue_styles' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ) );
 
 			add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_preview_styles' ) );
 
 			add_action( 'elementor/frontend/before_register_scripts', array( $this, 'register_scripts' ) );
-
-			add_action( 'elementor/frontend/before_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_action( 'elementor/frontend/before_enqueue_scripts',  array( $this, 'enqueue_scripts' ) );
 
 			add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'editor_scripts' ) );
 
-			add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'editor_styles' ) );
+			add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'icons_font_styles' ) );
+			add_action( 'elementor/preview/enqueue_styles',      array( $this, 'icons_font_styles' ) );
 
 			$this->localize_data['ajaxUrl'] = admin_url( 'admin-ajax.php' );
 			// Frontend messages
@@ -99,7 +98,7 @@ if ( ! class_exists( 'Jet_Elements_Assets' ) ) {
 			// Register vendor juxtapose-css styles
 			wp_register_style(
 				'jet-juxtapose-css',
-				jet_elements()->plugin_url( 'assets/css/lib/juxtapose/juxtapose.css' ),
+				jet_elements()->plugin_url( 'assets/css/lib/juxtapose/juxtapose.min.css' ),
 				false,
 				'1.3.0'
 			);
@@ -254,9 +253,12 @@ if ( ! class_exists( 'Jet_Elements_Assets' ) ) {
 		 * @return void
 		 */
 		public function enqueue_scripts() {
+
+			$min_suffix = jet_elements_tools()->is_script_debug() ? '' : '.min';
+
 			wp_enqueue_script(
 				'jet-elements',
-				jet_elements()->plugin_url( 'assets/js/jet-elements.js' ),
+				jet_elements()->plugin_url( 'assets/js/jet-elements' . $min_suffix . '.js' ),
 				array( 'jquery', 'elementor-frontend' ),
 				jet_elements()->get_version(),
 				true
@@ -270,15 +272,15 @@ if ( ! class_exists( 'Jet_Elements_Assets' ) ) {
 		}
 
 		/**
-		 * Enqueue editor styles
+		 * Enqueue icons font styles
 		 *
 		 * @return void
 		 */
-		public function editor_styles() {
+		public function icons_font_styles() {
 
 			wp_enqueue_style(
 				'jet-elements-font',
-				jet_elements()->plugin_url( 'assets/css/lib/jetelements-font/css/jetelements.css' ),
+				jet_elements()->plugin_url( 'assets/css/lib/jetelements-font/css/jetelements.min.css' ),
 				array(),
 				jet_elements()->get_version()
 			);
@@ -291,9 +293,12 @@ if ( ! class_exists( 'Jet_Elements_Assets' ) ) {
 		 * @return void
 		 */
 		public function editor_scripts() {
+
+			$min_suffix = jet_elements_tools()->is_script_debug() ? '' : '.min';
+
 			wp_enqueue_script(
 				'jet-elements-editor',
-				jet_elements()->plugin_url( 'assets/js/jet-elements-editor.js' ),
+				jet_elements()->plugin_url( 'assets/js/jet-elements-editor' . $min_suffix . '.js' ),
 				array( 'jquery' ),
 				jet_elements()->get_version(),
 				true

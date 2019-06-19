@@ -688,9 +688,6 @@ class Ai1wm_Import_Database {
 		// Get HTTP password
 		$auth_password = get_option( AI1WM_AUTH_PASSWORD );
 
-		// Get active plugins
-		$active_plugins = get_option( AI1WM_ACTIVE_PLUGINS, array() );
-
 		// Get backups labels
 		$backups_labels = get_option( AI1WM_BACKUPS_LABELS, array() );
 
@@ -820,9 +817,6 @@ class Ai1wm_Import_Database {
 
 		// Set the new HTTP password
 		update_option( AI1WM_AUTH_PASSWORD, $auth_password );
-
-		// Set the new active plugins
-		update_option( AI1WM_ACTIVE_PLUGINS, $active_plugins );
 
 		// Set the new backups labels
 		update_option( AI1WM_BACKUPS_LABELS, $backups_labels );

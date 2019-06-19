@@ -1,13 +1,58 @@
-# Jet Elements For Elementor
+# JetElements For Elementor
 
 Brand new addon for Elementor Page builder. It provides the set of modules to create different kinds of content, adds custom modules to your website and applies attractive styles in the matter of several clicks!
 
 # ChangeLog
 
-## [1.15.8](https://github.com/ZemezLab/jet-elements/archive/1.15.5.zip) - 08.04.2019
+## [1.15.14](https://github.com/ZemezLab/jet-elements/archive/1.15.14.zip) - 12.06.2019
+* Added: `Terms Links` in the Posts Widget
+* Added: an ability to use Elementor templates in the Slider Widget
+* Added: an ability to use dynamic tags in the Table widget
+* Added: `Alignment` responsive control for custom fields in the Posts widget
+* Fixed: displaying a button in the Advanced Carousel widget
+
+## [1.15.13](https://github.com/ZemezLab/jet-elements/archive/1.15.13.zip) - 30.05.2019
+* Added: option to open images in lightbox slider in the Instagram Gallery Widget
+* Added: responsive control to the `Fixed position` in the Dropbar Widget
+* Added: responsive control to the `Column Padding` in the Posts widget
+* Added: `Vertical Alignment` control for buttons (if enabled the Equal Columns Height option) in the Posts Widget
+* Added: additional size units to the `Point Size` control in Vertical Timeline and Horizontal Timeline Widgets
+* Added: `Action Button` in Vertical Timeline and Horizontal Timeline Widgets
+* Added: additional size units to `Height` control in the Animated Box Widget
+* Added: responsive controls to `Thumbnail width` and `Thumbnail height` in the Slider Widget
+* Added: `Text Direction` control in the Animated Text Widget
+* Added: several improvements in the Advanced Carousel Widget ([#218](https://github.com/CrocoBlock/suggestions/issues/218))
+* Added: `Center Mode` control in the Advanced Carousel Widget
+* Update: max value the option `Number of instagram posts` now is 50 in the Instagram Gallery Widget 
+* Fixed: translate week day in the Weather Widget
+* Fixed: not correct displaying excerpt in the editor in the Posts Widget
+* Fixed: `Contain` Image Scale Mode in the Slider Widget
+
+## [1.15.12](https://github.com/ZemezLab/jet-elements/archive/1.15.12.zip) - 15.05.2019
+* Added: rating for items in the Testimonials Widget
+* Added: `Title HTML Tag` control in the Vertical Timeline Widget
+* Fixed: display svg in the Inline SVG Widget
+
+## [1.15.11](https://github.com/ZemezLab/jet-elements/archive/1.15.11.zip) - 09.05.2019
+* Added: display the SVG thumbnails in media library and featured image
+* Added: `Featured Image Size` control for `Box Background` layout in the Posts Widget
+* Update: minify assets
+* Update: Scroll navigation js script
+* Fixed: Posts Carousel behavior when found posts less than number slides to show
+
+## [1.15.10](https://github.com/ZemezLab/jet-elements/archive/1.15.10.zip) - 24.04.2019
+* Added: the ability to use dynamic tags for decorative images in the Headline Widget
+* Update: replace Home URL with site URL in framework loader
+
+## [1.15.9](https://github.com/ZemezLab/jet-elements/archive/1.15.9.zip) - 22.04.2019
+* Added: `alt` attribute for images in widgets
+* Added: `rel` and `target` attributes for buttons in widgets
+* Update: disabled lazy load images by WP Rocket in the Images Comparison Widget
+
+## [1.15.8](https://github.com/ZemezLab/jet-elements/archive/1.15.8.zip) - 08.04.2019
 * Hot Fix: scroll navi widget
 
-## [1.15.7](https://github.com/ZemezLab/jet-elements/archive/1.15.5.zip) - 04.04.2019
+## [1.15.7](https://github.com/ZemezLab/jet-elements/archive/1.15.7.zip) - 04.04.2019
 * Fixed: scroll navi widget / section switching function
 * Fixed: subscribe widget / ajax url
 * Fixed: compatibility with the wpml old versions
@@ -52,7 +97,6 @@ Brand new addon for Elementor Page builder. It provides the set of modules to cr
 * Added: better compatibility with dynamic tags in the Video and Audio widgets
 * Fixed: Scheme_Typography in the Services Widget
 * Fixed: minor css bugs
-
 
 ## [1.14.10](https://github.com/ZemezLab/jet-elements/archive/1.14.10.zip)
 * Added: compatibility with Elementor 2.4.0
@@ -251,16 +295,13 @@ Brand new addon for Elementor Page builder. It provides the set of modules to cr
 * Fixed: block section scroling bug(OceanWp theme compatibility bug)
 
 ## [1.7.0.2](https://github.com/ZemezLab/jet-elements/releases/tag/1.7.0.2)
-
 * Fixed: instagram request bug
 * Fixed: scroll Navi waypoint once trigger bug
 
 ## [1.7.0.1](https://github.com/ZemezLab/jet-elements/releases/tag/1.7.0.1)
-
 * Updated .pot file
 
 ## [1.7.0](https://github.com/ZemezLab/jet-elements/releases/tag/1.7.0)
-
 * Added consulting page template
 * Added beauty salon page template
 * Car repair page template

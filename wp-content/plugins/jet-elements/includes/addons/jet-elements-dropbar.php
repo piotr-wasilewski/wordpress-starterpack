@@ -171,29 +171,15 @@ class Jet_Elements_Dropbar extends Jet_Elements_Base {
 			)
 		);
 
-		$templates = jet_elements()->elementor()->templates_manager->get_source( 'local' )->get_items();
-
-		$options = array(
-			'0' => '— ' . esc_html__( 'Select', 'jet-elements' ) . ' —',
-		);
-
-		$types = array();
-
-		foreach ( $templates as $template ) {
-			$options[ $template['template_id'] ] = $template['title'] . ' (' . $template['type'] . ')';
-			$types[ $template['template_id'] ] = $template['type'];
-		}
-
 		$this->add_control(
 			'template_id',
 			array(
 				'label'       => esc_html__( 'Choose Template', 'jet-elements' ),
 				'type'        => Controls_Manager::SELECT,
 				'default'     => '0',
-				'options'     => $options,
-				'types'       => $types,
+				'options'     => jet_elements_tools()->get_elementor_templates_options(),
 				'label_block' => 'true',
-				'condition' => array(
+				'condition'   => array(
 					'content_type' => 'template',
 				),
 			)
@@ -385,7 +371,7 @@ class Jet_Elements_Dropbar extends Jet_Elements_Base {
 			)
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'fixed_position',
 			array(
 				'label' => esc_html__( 'Fixed Position', 'jet-elements' ),
@@ -401,6 +387,22 @@ class Jet_Elements_Dropbar extends Jet_Elements_Base {
 					'bottom-left'   => esc_html__( 'Bottom Left', 'jet-elements' ),
 					'bottom-center' => esc_html__( 'Bottom Center', 'jet-elements' ),
 					'bottom-right'  => esc_html__( 'Bottom Right', 'jet-elements' ),
+				),
+				'selectors_dictionary' => array(
+					'top-left'      => 'top: 0; bottom: auto; left: 0; right: auto; transform: none;',
+					'top-center'    => 'top: 0; bottom: auto; left: 50%; right: auto; transform: translateX(-50%);',
+					'top-right'     => 'top: 0; bottom: auto; left: auto; right: 0; transform: none;',
+
+					'center-left'   => 'top: 50%; bottom: auto; left: 0; right: auto; transform: translateY(-50%);',
+					'center-center' => 'top: 50%; bottom: auto; left: 50%; right: auto; transform: translateX( -50% ) translateY( -50% );',
+					'center-right'  => 'top: 50%; bottom: auto; left: auto; right: 0; transform: translateY( -50% );',
+
+					'bottom-left'   => 'top: auto; bottom: 0; left: 0; right: auto; transform: none;',
+					'bottom-center' => 'top: auto; bottom: 0; left: 50%; right: auto; transform: translateX(-50%);',
+					'bottom-right'  => 'top: auto; bottom: 0; left: auto; right: 0; transform: none;',
+				),
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['dropbar'] => '{{VALUE}}',
 				),
 				'condition' => array(
 					'fixed' => 'yes',
@@ -871,7 +873,7 @@ class Jet_Elements_Dropbar extends Jet_Elements_Base {
 							get_permalink( $template_id )
 						);
 
-						$edit_link = sprintf( '<a class="jet-dropbar-edit-link" href="%s" title="%s" target="_blank"><i class="fa fa-pencil"></i></a>', esc_url( $edit_url ), esc_html__( 'Edit Template', 'jet-elements' ) );
+						$edit_link = sprintf( '<a class="jet-elements-edit-template-link" href="%s" title="%s" target="_blank"><i class="fa fa-pencil"></i></a>', esc_url( $edit_url ), esc_html__( 'Edit Template', 'jet-elements' ) );
 
 						$content .= $edit_link;
 					}

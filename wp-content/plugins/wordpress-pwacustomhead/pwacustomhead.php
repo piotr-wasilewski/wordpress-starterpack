@@ -8,7 +8,7 @@ function pwa_custom_head() {
 
     $user = wp_get_current_user();
 //    var_dump($user->data->ID);exit;
-    if($user->data->ID !== "1") {
+    if($user->data->ID !== "2") {
 
         echo '<style>
                 #toplevel_page_elementor,

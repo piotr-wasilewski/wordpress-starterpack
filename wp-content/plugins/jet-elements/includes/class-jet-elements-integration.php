@@ -317,7 +317,7 @@ if ( ! class_exists( 'Jet_Elements_Integration' ) ) {
 			$elements_manager->add_category(
 				$cherry_cat,
 				array(
-					'title' => esc_html__( 'Jet Elements', 'jet-elements' ),
+					'title' => esc_html__( 'JetElements', 'jet-elements' ),
 					'icon'  => 'font',
 				),
 				1

@@ -16,7 +16,7 @@ $data     = $this->weather_data;
 <?php if ( isset( $settings['show_current_weather_details'] ) && 'true' === $settings['show_current_weather_details'] ) { ?>
 	<div class="jet-weather__details">
 		<div class="jet-weather__details-column">
-			<div class="jet-weather__details-item jet-weather__current-day"><?php echo $data['current']['week_day']; ?></div>
+			<div class="jet-weather__details-item jet-weather__current-day"><?php echo date_i18n( 'l' ); ?></div>
 			<div class="jet-weather__details-item jet-weather__current-sunrise">
 				<?php echo $this->get_weather_svg_icon( 'sunrise' ); ?>
 				<?php echo $this->get_weather_astro_time( $data['current']['sunrise'] ); ?>

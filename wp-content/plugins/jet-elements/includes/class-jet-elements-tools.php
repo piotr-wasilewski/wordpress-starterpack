@@ -25,8 +25,9 @@ if ( ! class_exists( 'Jet_Elements_Tools' ) ) {
 
 		/**
 		 * Returns columns classes string
-		 * @param  [type] $columns [description]
-		 * @return [type]          [description]
+		 *
+		 * @param  array $columns Columns classes array
+		 * @return string
 		 */
 		public function col_classes( $columns = array() ) {
 
@@ -52,7 +53,7 @@ if ( ! class_exists( 'Jet_Elements_Tools' ) ) {
 		 *
 		 * @param  string $use_cols_gap [description]
 		 * @param  string $use_rows_gap [description]
-		 * @return [type]               [description]
+		 * @return string
 		 */
 		public function gap_classes( $use_cols_gap = 'yes', $use_rows_gap = 'yes' ) {
 
@@ -320,8 +321,8 @@ if ( ! class_exists( 'Jet_Elements_Tools' ) ) {
 		}
 
 		/**
-		 * Return availbale arrows list
-		 * @return [type] [description]
+		 * Return available arrows list
+		 * @return array
 		 */
 		public function get_available_prev_arrows_list() {
 
@@ -343,8 +344,8 @@ if ( ! class_exists( 'Jet_Elements_Tools' ) ) {
 		}
 
 		/**
-		 * Return availbale arrows list
-		 * @return [type] [description]
+		 * Return available arrows list
+		 * @return array
 		 */
 		public function get_available_next_arrows_list() {
 
@@ -379,6 +380,34 @@ if ( ! class_exists( 'Jet_Elements_Tools' ) ) {
 			$taxonomies = get_taxonomies( $args, 'objects', 'and' );
 
 			return wp_list_pluck( $taxonomies, 'label', 'name' );
+		}
+
+		/**
+		 * Get elementor templates list for options.
+		 *
+		 * @return array
+		 */
+		public function get_elementor_templates_options() {
+			$templates = jet_elements()->elementor()->templates_manager->get_source( 'local' )->get_items();
+
+			$options = array(
+				'0' => '— ' . esc_html__( 'Select', 'jet-elements' ) . ' —',
+			);
+
+			foreach ( $templates as $template ) {
+				$options[ $template['template_id'] ] = $template['title'] . ' (' . $template['type'] . ')';
+			}
+
+			return $options;
+		}
+
+		/**
+		 * Is script debug.
+		 *
+		 * @return bool
+		 */
+		public function is_script_debug() {
+			return defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
 		}
 
 		/**

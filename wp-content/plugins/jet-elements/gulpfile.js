@@ -4,6 +4,7 @@ let gulp         = require('gulp'),
 	rename       = require('gulp-rename'),
 	notify       = require('gulp-notify'),
 	autoprefixer = require('gulp-autoprefixer'),
+	uglify       = require('gulp-uglify'),
 	sass         = require('gulp-sass'),
 	plumber      = require('gulp-plumber'),
 	checktextdomain = require('gulp-checktextdomain');
@@ -96,9 +97,29 @@ gulp.task('css-rtl', () => {
 		   .pipe(notify('Compile Sass Done!'));
 });
 
+// Minify JS
+gulp.task( 'js-minify', function() {
+	return gulp.src( './assets/js/jet-elements.js' )
+		.pipe( uglify() )
+		.pipe( rename( { extname: '.min.js' } ) )
+		.pipe( gulp.dest( './assets/js/' ) )
+		.pipe( notify( 'js Minify Done!' ) );
+} );
+
+gulp.task( 'js-editor-minify', function() {
+	return gulp.src( './assets/js/jet-elements-editor.js' )
+		.pipe( uglify() )
+		.pipe( rename( { extname: '.min.js' } ) )
+		.pipe( gulp.dest( './assets/js/' ) )
+		.pipe( notify( 'js Minify Done!' ) );
+} );
+
 //watch
 gulp.task('watch', () => {
 	gulp.watch('./assets/scss/**', ['css', 'css-skin', 'css-admin', 'css-rtl']);
+
+	gulp.watch( './assets/js/jet-elements.js', ['js-minify'] );
+	gulp.watch( './assets/js/jet-elements-editor.js', ['js-editor-minify'] );
 });
 
 gulp.task( 'checktextdomain', () => {

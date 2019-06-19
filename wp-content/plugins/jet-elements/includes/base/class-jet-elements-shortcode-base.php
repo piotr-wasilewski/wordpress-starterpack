@@ -21,7 +21,8 @@ if ( ! class_exists( 'Jet_Elements_Shortcode_Base' ) ) {
 		public $atts = array();
 
 		/**
-		 * Initalize post type
+		 * Initialize post type
+		 *
 		 * @return void
 		 */
 		public function __construct() {
@@ -36,18 +37,19 @@ if ( ! class_exists( 'Jet_Elements_Shortcode_Base' ) ) {
 		public function get_tag() {}
 
 		/**
-		 * THis function shold be reritten in shortcode class with attributes array.
+		 * THis function should be rewritten in shortcode class with attributes array.
 		 *
-		 * @return [type] [description]
+		 * @return array
 		 */
 		public function get_atts() {
 			return array();
 		}
 
 		/**
-		 * Retrieve single shortocde argument
+		 * Retrieve single shortcode argument
 		 *
-		 * @return void
+		 * @param  string $name
+		 * @return mixed
 		 */
 		public function get_attr( $name = null ) {
 
@@ -100,7 +102,7 @@ if ( ! class_exists( 'Jet_Elements_Shortcode_Base' ) ) {
 		}
 
 		/**
-		 * Return defult shortcode attributes
+		 * Return default shortcode attributes
 		 *
 		 * @return array
 		 */
@@ -116,7 +118,7 @@ if ( ! class_exists( 'Jet_Elements_Shortcode_Base' ) ) {
 		}
 
 		/**
-		 * Shortcode calback
+		 * Shortcode callback
 		 *
 		 * @return string
 		 */
