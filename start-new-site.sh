@@ -73,13 +73,13 @@ RewriteRule . /$SITE/index.php [L]
 
 echo "Preapring config"
 
-head -n 8 "${DIR}${SITE}/wp-config-sample.php" | cat > "${DIR}${SITE}/wp-config.php"
+head -n 8 "${DIR}${SITE}/.wp-config.php" | cat > "${DIR}${SITE}/wp-config.php"
 
 wget -P $TMP https://api.wordpress.org/secret-key/1.1/salt/
 cat "${TMP}/index.html" >> "${DIR}${SITE}/wp-config.php"
 rm "${TMP}/index.html"
 
-tail -n 5 "${DIR}${SITE}/wp-config-sample.php" | cat >> "${DIR}${SITE}/wp-config.php"
+tail -n 5 "${DIR}${SITE}/.wp-config.php" | cat >> "${DIR}${SITE}/wp-config.php"
 
 # zamiana bazy danych w configu
 sed -i -e "s/database_name_here/$MYSQL_SITE_DB/g" "${DIR}${SITE}/wp-config.php"
