@@ -73,6 +73,7 @@ RewriteRule . /$SITE/index.php [L]
 
 echo "Preapring config"
 
+rm "${DIR}${SITE}/wp-config.php"
 head -n 8 "${DIR}${SITE}/.wp-config.php" | cat > "${DIR}${SITE}/wp-config.php"
 
 wget -P $TMP https://api.wordpress.org/secret-key/1.1/salt/
@@ -86,6 +87,12 @@ sed -i -e "s/database_name_here/$MYSQL_SITE_DB/g" "${DIR}${SITE}/wp-config.php"
 sed -i -e "s/username_here/$ENV_MYSQL_USER/g" "${DIR}${SITE}/wp-config.php"
 sed -i -e "s/password_here/$ENV_MYSQL_PASS/g" "${DIR}${SITE}/wp-config.php"
 sed -i -e "s/localhost/$ENV_MYSQL_HOST/g" "${DIR}${SITE}/wp-config.php"
+rm "${DIR}${SITE}/wp-config.php-e"
+rm "${DIR}${SITE}/.wp-config.php"
+rm "${DIR}${SITE}/wp-config-sample.php"
+rm "${DIR}${SITE}/wordpress.sql.zip"
+rm "${DIR}${SITE}/.gitignore"
+rm -rf "${DIR}${SITE}/.git"
 
 echo "Site is ready: $DNS"
 echo "ALL DONE :)"
